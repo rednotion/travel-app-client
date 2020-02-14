@@ -3,6 +3,7 @@ import { Glyphicon } from "react-bootstrap";
 import ReactDOM from "react-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from 'styled-components';
+import Popup from "reactjs-popup";
 
 import { PanelTitle, PanelSubtitle } from "../styles/Pages"
 import { Title, AlignColumns, ColumnContainer, AlignItems, 
