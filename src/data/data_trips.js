@@ -19,9 +19,14 @@ export const info = {
   	},
 
   	"columns": {
-  		'col-1': {id: 'col-1', type: 'day', description: 'Day 1', taskIds: ['place-1']},
-  		'col-2': {id: 'col-2', type: 'day', description: 'Day 2', taskIds: ['place-2']},
-  		'col-3': {id: 'col-3', type: 'day', description: 'Day 3', taskIds: ['place-3']},
+  		'col-1': {id: 'col-1', type: 'day', description: 'Day 1', startTime: 13, endTime: 22, lodging: {},
+  			taskIds: ['place-1']},
+  		'col-2': {id: 'col-2', type: 'day', description: 'Day 2', startTime: 9, endTime: 22, lodging: {},
+  			taskIds: ['place-2']},
+  		'col-3': {id: 'col-3', type: 'day', description: 'Day 3', startTime: 9, endTime: 22, lodging: {},
+  			taskIds: ['place-3']},
+
+  		//wishlist
   		'wishlist-1': {
 			id: 'wishlist-1', 
 			type: 'wishlist',

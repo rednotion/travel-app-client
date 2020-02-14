@@ -122,3 +122,10 @@ export const RulerNotch = styled.div`
   
   padding: 2px;
 `;
+export const EmptyRulerNotch = styled.div`
+  height: ${durationMultiplier + "px"};
+  background: ${props => (props.isDraggingOver ? '#a1bcc3' : '#b1b3b3')};
+  font-size: 10px;
+  
+  padding: 2px;
+`;

@@ -5,13 +5,11 @@ import { LinkContainer } from "react-router-bootstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from 'styled-components';
 import Popup from "reactjs-popup";
-
-
 import "../styles/HoverStyles.css"
 
 import { BackgroundPanel, PanelTitle, PanelSubtitle } from "../styles/Pages"
 import { Title, AlignColumns, ColumnContainer, AlignItems, 
-  ItemContainer, AlignRuler, Ruler, RulerNotch, DriveContainer,
+  ItemContainer, AlignRuler, Ruler, RulerNotch, EmptyRulerNotch, DriveContainer,
   WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer } from "../styles/DDList.js"
 import Toolbar from "../components/Toolbar.js";
 
@@ -19,13 +17,27 @@ import { info, distances } from '../data/data_trips.js'
 
 //////////
 
-function generateTime(n) {
-  const indexes = [...Array(n).keys()];
-  const timeLabels = indexes.map(item => (item + 8))
-  const labels = timeLabels.map(lab => (
+function generateTime(startTime, endTime) {
+  const hours = [...Array(endTime).keys()].slice(startTime, endTime)
+  const labels = hours.map(lab => (
     (lab < 12) ? (lab + "am") : ((lab === 12) ? (lab + "pm") : (lab-12 + "pm"))
   ))
   return labels
+}
+
+
+const minTime = Math.min(...info.colOrder.map(colId => info.columns[colId].startTime))
+
+function renderEmptyNotches(colId, startTime, minTime, isDraggingOver) {
+  if (minTime < startTime) {
+    return (
+      generateTime(minTime, startTime).map(label => (
+        <EmptyRulerNotch isDraggingOver={isDraggingOver}>
+        </EmptyRulerNotch>
+    )))
+  } else {
+    return( <div></div>)
+  }
 }
 
 function getDistance(origin, destination, distances) {
@@ -158,6 +170,7 @@ class App extends Component {
     this.state = info
     this.distances = distances
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.minTime = minTime
     this.tripId = ''
   }
 
@@ -225,7 +238,7 @@ class App extends Component {
       <div>
 
       { Toolbar(this.tripId) }
-      
+
       <DragDropContext onDragEnd={this.onDragEnd}>
         <AlignColumns>
         { /* Daily Columns */}
@@ -243,9 +256,10 @@ class App extends Component {
                 <span class="right">{<Glyphicon glyph="pushpin"/>}</span>
                 </div>
                 </Title>
+                  {renderEmptyNotches(colId, this.state.columns[colId].startTime, this.minTime, snapshot.isDraggingOver)}
                   <AlignRuler>
                   <Ruler pullLeft isDraggingOver={snapshot.isDraggingOver}>
-                    {generateTime(14).map(label => (
+                    {generateTime(this.state.columns[colId].startTime, this.state.columns[colId].endTime).map(label => (
                       <RulerNotch isDraggingOver={snapshot.isDraggingOver}>
                       {label}
                       </RulerNotch>))}
