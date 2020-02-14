@@ -1,13 +1,16 @@
 import React, { Component } from "react";
-import { Glyphicon } from "react-bootstrap";
+import { Glyphicon, Button } from "react-bootstrap";
 import ReactDOM from "react-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from 'styled-components';
 import Popup from "reactjs-popup";
 
+import "../styles/HoverStyles.css"
+
 import { PanelTitle, PanelSubtitle } from "../styles/Pages"
 import { Title, AlignColumns, ColumnContainer, AlignItems, 
-  ItemContainer, AlignRuler, Ruler, RulerNotch, DriveContainer } from "../styles/DDList.js"
+  ItemContainer, AlignRuler, Ruler, RulerNotch, DriveContainer,
+  WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer } from "../styles/DDList.js"
 
 
 import { info, distances } from '../data/data_trips.js'
@@ -44,18 +47,33 @@ function getDistance(origin, destination, distances) {
   return distances[origin][destination]
 }
 
-function generateItemCard(place, distances, info) {
+function generateItemCard(place, distances, info, isDragging) {
   // const nearestPlaceName = info[nearestPlace].locationName
   if (place.type == 'location'){
     return(
       <div>
-      {<Glyphicon glyph="map-marker"/>} <b>{place.description}</b> <br></br>
+      <span class="left"><b>{place.description}</b></span>
+      {(!isDragging) ? <span class="right">{launchPopUp()}</span> : <></>}
       </div>
     ) } else {
     return(
       <center><small>{place.description}</small></center>
       )
   }
+}
+
+function launchPopUp() {
+  return(
+    <Popup trigger={<div className="EditButton">
+        <span class="glyphicon glyphicon-pencil"></span>
+      </div>} modal>
+            here here
+    </Popup>
+  );
+}
+
+function launchToolTip() {
+  
 }
 
 function rebuildList(places, distances) {
@@ -81,6 +99,7 @@ function rebuildList(places, distances) {
 
   return [newTaskIds, newDriveItems]
 }
+
 
 /////////////
 /////////////
@@ -184,7 +203,8 @@ class App extends Component {
   		                      isDragging={snapshot.isDragging}
                             itemDuration={this.state.items[item].duration}
   		                    >
-                            {generateItemCard(this.state.items[item], distances, info)}
+                          <ItemTitle>{generateItemCard(this.state.items[item], distances, info, snapshot.isDragging)}</ItemTitle>
+                          <ItemBody>Text2</ItemBody>
   		                    </ItemContainer>
   		                  )}
   		                </Draggable>
@@ -201,11 +221,12 @@ class App extends Component {
 	          )}
 	        </Droppable>
 	    ))}
+      
       { /* Wishlist Column */}
       {this.state.wishlistColOrder.map((colId, index) => (
           <Droppable droppableId={colId} >
             {(provided, snapshot) => (
-              <ColumnContainer
+              <WishlistContainer
                 {...provided.droppableProps}
                 ref={provided.innerRef}
                 isDraggingOver={snapshot.isDraggingOver}
@@ -218,14 +239,14 @@ class App extends Component {
                     ? (
                       <Draggable key={item} draggableId={item} index={index}>
                         {(provided, snapshot) => (
-                          <ItemContainer
+                          <WishlistItemContainer
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             isDragging={snapshot.isDragging}
                           >
-                            {generateItemCard(this.state.items[item], distances, info)}
-                          </ItemContainer>
+                            {generateItemCard(this.state.items[item], distances, info, snapshot.isDragging)}
+                          </WishlistItemContainer>
                         )}
                       </Draggable>
                     )
@@ -236,11 +257,11 @@ class App extends Component {
                     )))}
                   </AlignItems>
                   {provided.placeholder}
-              </ColumnContainer>
+              </WishlistContainer>
             )}
           </Droppable>
       ))}
-	    </AlignColumns>
+      </AlignColumns>
       </DragDropContext>
       </div>
     );

@@ -8,7 +8,7 @@ const itemPadding = 3;
 export const Title = styled.h3`
   background: #d3d4d1;
   margin-top: 0px;
-  padding: 5px;
+  padding: 10px;
   font-family: "Open Sans", sans-serif;
   font-weight: "bold";
 `;
@@ -27,6 +27,19 @@ export const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+export const WishlistContainer = styled.div`
+  background: ${props => (props.isDraggingOver ? '#8A9EDB' : '#ABB4CF')};
+
+  margin: 8px;
+
+  min-width: 200px;
+  max-width: 300px;
+  
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+
+`
 
 // List Items
 export const AlignItems = styled.div`
@@ -34,23 +47,46 @@ export const AlignItems = styled.div`
 	min-height: 200px;
   max-height: ${durationMultiplier * 12};
 `;
+// border: ${props => (props.isDragging ? '#99d3d5' : '1px solid #c7cecf')};
 export const ItemContainer = styled.div`
   border-radius: 8px;
-  border: ${props => (props.isDragging ? '#99d3d5' : '1px solid #c7cecf')};
   background: ${props => (props.isDragging ? '#99d3d5' : '#d1d8da')};
 
   font-family: "Open Sans", sans-serif;
+  font-size: 12px;
   
-  padding: 8px;
+  padding-bottom: 8px;
 
   margin-top: 0px;
   margin-bottom: ${itemPadding + "px"};
   margin-right: 8px;
   margin-left: 5px;
   
+  min-height: 35px;
   height: ${props => props.itemDuration * durationMultiplier - itemPadding + "px"}
 `;
-
+export const ItemTitle = styled.div`
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  background: #CFABB4;
+  padding: 8px;
+  min-height: 30px;
+`
+export const ItemBody = styled.div`
+  margin: 8px;
+`
+export const WishlistItemContainer = styled.div`
+  border-radius: 8px;
+  background: ${props => (props.isDragging ? '#99d3d5' : '#d1d8da')};
+  padding: 8px;
+  min-height: 30px;
+  margin-bottom: 10px;
+  margin-right: 8px;
+  margin-left: 8px;
+  
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px; 
+`
 
 // Drive Items
 export const DriveContainer = styled.div`
@@ -58,6 +94,8 @@ export const DriveContainer = styled.div`
   font-size: 12px;
   height: ${props => props.itemDuration * durationMultiplier + "px"};
   margin-bottom: ${itemPadding + "px"};
+
+  ${props => props.item}
   
   display: flex;
   justify-content: center;

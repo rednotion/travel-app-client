@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import { PageHeader, ListGroup, ListGroupItem, Glyphicon } from "react-bootstrap";
+import { PageHeader, ListGroup, ListGroupItem, Glyphicon, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { API } from "aws-amplify";
+import Popup from "reactjs-popup";
 
 import { AlignPanels, BackgroundPanel, PanelTitle, PanelSubtitle, InvisiblePanel, 
     InvisiblePanelFixed } from "./MyTrips_css.js";
@@ -69,8 +70,14 @@ export default function Home(props) {
 
     /* Summary of what to render */
     return (
-        <div className="Home">
+        <AlignPanels>
+        <BackgroundPanel>
             {props.isAuthenticated ? renderTripLinks(allTrips) : renderLanding()}
-        </div>
+        </BackgroundPanel>
+
+        <BackgroundPanel>
+        Random things.
+        </BackgroundPanel>
+        </AlignPanels>
     );
 }

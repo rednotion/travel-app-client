@@ -1,0 +1,35 @@
+.EditButton {
+   margin-left: 5px;
+   margin-top: -3px;
+   background: #A8B3B7;
+   border-radius: 2px;
+   text-align: center;
+   border: 0.5px solid #8A9498;
+   width: 20px;
+   height: 20px;
+}
+
+.EditButton:hover{
+	background: #828D90;
+}
+
+.glyphicon.glyphicon-pencil {
+    font-size: 10px;
+    color: #575C5E;
+}
+
+.EditTopRight {
+	position: absolute;
+	top: 8px;
+	right: 16px;
+	font-size: 18px;
+}
+
+.right{
+    float:right;
+}
+
+.left{
+    float:left;
+}
+
