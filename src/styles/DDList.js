@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import * as Colors from './colors.js'
 
-const durationMultiplier = 50;
+const durationMultiplier = 60;
 const itemPadding = 3;
 
 // Column items
@@ -28,7 +28,7 @@ export const ColumnContainer = styled.div`
   flex-direction: column;
 `;
 export const WishlistContainer = styled.div`
-  background: ${props => (props.isDraggingOver ? '#8A9EDB' : '#ABB4CF')};
+  background: ${props => (props.isDraggingOver ? '#8A9EDB' : '#A2A2A2')};
 
   margin: 8px;
 
@@ -83,7 +83,7 @@ export const WishlistItemContainer = styled.div`
   margin-bottom: 10px;
   margin-right: 8px;
   margin-left: 8px;
-  
+
   font-family: "Open Sans", sans-serif;
   font-size: 12px; 
 `

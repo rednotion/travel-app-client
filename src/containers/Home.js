@@ -76,7 +76,7 @@ export default function Home(props) {
         </BackgroundPanel>
 
         <BackgroundPanel>
-        Random things.
+        Random
         </BackgroundPanel>
         </AlignPanels>
     );

@@ -8,6 +8,7 @@ import { useFormFields } from "../libs/hooksLib";
 import LoaderButton from "../components/LoaderButton";
 import { AlignPanels, BackgroundPanel, PanelTitle, PanelSubtitle, InvisiblePanel, 
 	InvisiblePanelFixed } from "./MyTrips_css.js";
+import Toolbar from "../components/Toolbar.js";
 
 import { trips as data_trips } from "../data/data_trips.js"
 
@@ -56,6 +57,8 @@ export default function Trip(props) {
 	function handleTripChange() {}
 
 	return (
+		<div>
+		{ Toolbar(tripId) }
 		<BackgroundPanel>
 		<AlignPanels>
 
@@ -100,6 +103,7 @@ export default function Trip(props) {
 
 		</AlignPanels>
 		</BackgroundPanel>
+		</div>
 	)
 
 }

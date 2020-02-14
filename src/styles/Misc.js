@@ -5,3 +5,10 @@ export const NotFoundContainer = styled.div`
   text-align: center;
 `;
 
+export const ToolbarHeader = styled.div`
+  padding: 8px;
+  height: 50px;
+`
+export const ToolbarButton = styled.span`
+  margin-right: 10px;
+`

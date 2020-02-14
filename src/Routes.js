@@ -14,6 +14,8 @@ import Trip from "./containers/Trip.js";
 import MyTrips from "./containers/MyTrips.js";
 
 import Planner from "./containers/Planner.js";
+import Places from "./containers/Places.js";
+import Days from "./containers/Days.js";
 
 export default function Routes({ appProps }) {
   return (
@@ -25,9 +27,11 @@ export default function Routes({ appProps }) {
       <UnauthenticatedRoute path="/login" exact component={Login} appProps={appProps} />
       <UnauthenticatedRoute path="/signup" exact component={Signup} appProps={appProps} />
       { /* If you are logged OUT, these routes should go to LOGIN */}
-      <AuthenticatedRoute path="/trips" exact component={MyTrips} appProps={appProps} />
-      <AuthenticatedRoute path="/trip/:id" exact component={Trip} appProps={appProps} />
-      <AuthenticatedRoute path="/plan/:id" exact component={Planner} appProps={appProps} />
+      <AppliedRoute path="/trips" exact component={MyTrips} appProps={appProps} />
+      <AppliedRoute path="/trip/:id" exact component={Trip} appProps={appProps} />
+      <AppliedRoute path="/plan/:id" exact component={Planner} appProps={appProps} />
+      <AppliedRoute path="/places/:id" exact component={Places} appProps={appProps} />
+      <AppliedRoute path="/days/:id" exact component={Days} appProps={appProps} />
       { /* Finally, catch all unmatched routes */ }
       <Route component={NotFound} />
     </Switch>

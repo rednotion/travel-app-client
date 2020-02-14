@@ -1,17 +1,19 @@
 import React, { Component } from "react";
-import { Glyphicon, Button } from "react-bootstrap";
+import { FormGroup, FormControl, ControlLabel, Glyphicon, Button } from "react-bootstrap";
 import ReactDOM from "react-dom";
+import { LinkContainer } from "react-router-bootstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from 'styled-components';
 import Popup from "reactjs-popup";
 
+
 import "../styles/HoverStyles.css"
 
-import { PanelTitle, PanelSubtitle } from "../styles/Pages"
+import { BackgroundPanel, PanelTitle, PanelSubtitle } from "../styles/Pages"
 import { Title, AlignColumns, ColumnContainer, AlignItems, 
   ItemContainer, AlignRuler, Ruler, RulerNotch, DriveContainer,
   WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer } from "../styles/DDList.js"
-
+import Toolbar from "../components/Toolbar.js";
 
 import { info, distances } from '../data/data_trips.js'
 
@@ -26,7 +28,11 @@ function generateTime(n) {
   return labels
 }
 
-function generateFindNearestLocation(itemId, distances, info) {
+function getDistance(origin, destination, distances) {
+  return distances[origin][destination]
+}
+
+function generateNearLocations(itemId, distances, info) {
   // returns ['locationName', distance]
   const distanceDict = distances[itemId]
   var items = Object.keys(distanceDict).map(function(key) {
@@ -36,24 +42,34 @@ function generateFindNearestLocation(itemId, distances, info) {
   items.sort(function(first, second) {
     return first[1] - second[1];
   });
+  items = items.filter(pair => pair[0] != itemId)
 
-  const nearestPlaceName = info.items[items[0][0]].locationName
-  const results = [nearestPlaceName, items[0][1]]
+  const nearLocations = items.map(each => ([info.items[each[0]].description, each[1]]))
 
-  return results
+  return nearLocations.slice(0,3)
 }
 
-function getDistance(origin, destination, distances) {
-  return distances[origin][destination]
+function launchToolTip(itemId, distances, info) {
+  const nearLocations = generateNearLocations(itemId, distances, info)
+  return (
+    <Popup
+      trigger={<span class="LocationTip">Where next?</span>}
+      on="hover"
+    >
+      {nearLocations.map(item => (
+        <div><b>{item[0]}</b> is {item[1]} hours away</div>
+      ))}
+    </Popup>
+  )
 }
 
-function generateItemCard(place, distances, info, isDragging) {
+function generateItemTitle(place, isDragging) {
   // const nearestPlaceName = info[nearestPlace].locationName
   if (place.type == 'location'){
     return(
       <div>
       <span class="left"><b>{place.description}</b></span>
-      {(!isDragging) ? <span class="right">{launchPopUp()}</span> : <></>}
+      {(!isDragging) ? <span class="right">{launchPopUp()}</span> : ""}
       </div>
     ) } else {
     return(
@@ -62,18 +78,50 @@ function generateItemCard(place, distances, info, isDragging) {
   }
 }
 
+function handleFieldChange() {}
+function handleSubmit() {}
+function formField(title, id, field, type) {
+    return(
+        <FormGroup controlId={id} bsSize="large">
+          <ControlLabel>{title}</ControlLabel>
+          <FormControl
+            autoFocus
+            type={type}
+            onChange={handleFieldChange}
+            value={field}
+          />
+        </FormGroup>
+      );
+  }
+
 function launchPopUp() {
+  const fields = {name: 'hello', location: 'x=10,y=10', duration:10}
   return(
-    <Popup trigger={<div className="EditButton">
-        <span class="glyphicon glyphicon-pencil"></span>
-      </div>} modal>
-            here here
+    <Popup 
+      trigger={<div className="EditButton"><span class="glyphicon glyphicon-pencil"></span></div>} 
+      modal
+    >
+      <AlignColumns>
+      <BackgroundPanel>
+      <h3>Current Info</h3>
+      </BackgroundPanel>
+
+      <BackgroundPanel>
+        <form onSubmit={handleSubmit}>
+          <FormGroup controlId="formgroup1" bsSize="small">
+            <ControlLabel>Title</ControlLabel>
+            <FormControl
+              autoFocus
+              type="content"
+              onChange={handleFieldChange}
+              value="hello"
+            />
+          </FormGroup>
+        </form>
+      </BackgroundPanel>
+      </AlignColumns>
     </Popup>
   );
-}
-
-function launchToolTip() {
-  
 }
 
 function rebuildList(places, distances) {
@@ -110,7 +158,10 @@ class App extends Component {
     this.state = info
     this.distances = distances
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.tripId = ''
   }
+
+
 
   onDragEnd = results => {
     var itemList = this.state.items
@@ -165,11 +216,16 @@ class App extends Component {
 
   }
 
+  
+
   // Normally you would want to split things out into separate components.
   // But in this example everything is just done in one place for simplicity
   render() {
     return (
       <div>
+
+      { Toolbar(this.tripId) }
+      
       <DragDropContext onDragEnd={this.onDragEnd}>
         <AlignColumns>
         { /* Daily Columns */}
@@ -181,7 +237,12 @@ class App extends Component {
 	              ref={provided.innerRef}
 	              isDraggingOver={snapshot.isDraggingOver}
 	            >
-	            	<Title>{this.state.columns[colId].description}</Title>
+                <Title>
+                <div>
+                <span class="left">{this.state.columns[colId].description}</span>
+                <span class="right">{<Glyphicon glyph="pushpin"/>}</span>
+                </div>
+                </Title>
                   <AlignRuler>
                   <Ruler pullLeft isDraggingOver={snapshot.isDraggingOver}>
                     {generateTime(14).map(label => (
@@ -203,15 +264,18 @@ class App extends Component {
   		                      isDragging={snapshot.isDragging}
                             itemDuration={this.state.items[item].duration}
   		                    >
-                          <ItemTitle>{generateItemCard(this.state.items[item], distances, info, snapshot.isDragging)}</ItemTitle>
-                          <ItemBody>Text2</ItemBody>
+                          <ItemTitle>{generateItemTitle(this.state.items[item], snapshot.isDragging)}</ItemTitle>
+                          <ItemBody>
+                            {this.state.items[item].description} + "more words..."
+                          </ItemBody>
+                          <div>{launchToolTip(this.state.items[item].id, this.distances, this.state)}</div>
   		                    </ItemContainer>
   		                  )}
   		                </Draggable>
                     )
                     :(
                       <DriveContainer itemDuration={this.state.items[item].duration}>
-                        {generateItemCard(this.state.items[item], distances, info)}
+                        {generateItemTitle(this.state.items[item])}
                       </DriveContainer>
                     )))}
 	              	</AlignItems>
@@ -245,14 +309,14 @@ class App extends Component {
                             {...provided.dragHandleProps}
                             isDragging={snapshot.isDragging}
                           >
-                            {generateItemCard(this.state.items[item], distances, info, snapshot.isDragging)}
+                            {generateItemTitle(this.state.items[item], snapshot.isDragging)}
                           </WishlistItemContainer>
                         )}
                       </Draggable>
                     )
                     :(
                       <DriveContainer itemDuration={this.state.items[item].duration}>
-                        {generateItemCard(this.state.items[item], distances, info)}
+                        {generateItemTitle(this.state.items[item])}
                       </DriveContainer>
                     )))}
                   </AlignItems>
@@ -268,6 +332,9 @@ class App extends Component {
   }
 }
 
-export default function TestPage(props) {
-	return(<App />)
+export default function Planner(props) {
+  console.log(props.match.params.id)
+  const newApp = new App
+  newApp.tripId = props.match.params.id
+	return(newApp)
 }
