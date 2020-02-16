@@ -1,20 +1,18 @@
 export default {
   MAX_ATTACHMENT_SIZE: 5000000,
-
-  STRIPE_KEY: "pk_test_A6WCjPy3R23AgHC2Ab88NNu1002peJnShW",
   
   s3: {
-    REGION: "ap-southeast-1",
+    REGION: "us-east-1",
     BUCKET: "rednotion-notes-app-uploads"
   },
   apiGateway: {
-    REGION: "ap-southeast-1",
+    REGION: "us-east-1",
     URL: "https://enz1b8466d.execute-api.ap-southeast-1.amazonaws.com/prod"
   },
   cognito: {
-    REGION: "ap-southeast-1",
-    USER_POOL_ID: "ap-southeast-1_v2ltFGA5G",
-    APP_CLIENT_ID: "4ie5dop2kp51qunjnsqkj1lu7v",
-    IDENTITY_POOL_ID: "ap-southeast-1:e5061b56-efc9-4415-ab7e-f60e0ac109fd"
+    REGION: "us-east-1",
+    USER_POOL_ID: "us-east-1_zmsYOxHfn",
+    APP_CLIENT_ID: "58o48s2m5671bm4lvjen6v7pgc",
+    IDENTITY_POOL_ID: "us-east-1:e88adfe8-6df9-49ba-81c5-166ca4a016d2"
   }
 };
