@@ -48,6 +48,7 @@ export default function Days(props) {
                     // props.setCurrentTripId(props.match.params.tripId)
                     // props.setCurrentTripColumns(infoOnTrip.colIds)
                     setAllDays(dayOutput);
+                    props.setCurrentTripColumns(infoOnTrip.colIds)
                 } catch (e) {
                     alert(e);
             }
