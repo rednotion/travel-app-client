@@ -17,13 +17,8 @@ this component but we don’t want to render any extra HTML. */ }
 function App(props) {
   const [isAuthenticated, userHasAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
-  const [currentTrip, setCurrentTrip] = useFormFields({
-    'tripId': '',
-    'tripName': '', 
-    'tripStart': '', 
-    'tripEnd': '',
-    'tripLocation': ''
-  });
+  const [currentTripId, setCurrentTripId] = useState(null);
+  const [currentTripColumns, setCurrentTripColumns] = useState(null)
 
   useEffect(() => {onLoad();}, []);
   { /* useEffect has 2 arguments: Function; Array of variables 
@@ -56,7 +51,6 @@ function App(props) {
         <Navbar.Header>
           <Navbar.Brand>
             <Link to="/">TakeMeTo</Link> 
-            {(currentTrip.tripName) ? (" :: "+currentTrip.tripName) : ""}
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
@@ -81,7 +75,7 @@ function App(props) {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
+      <Routes appProps={{ isAuthenticated, userHasAuthenticated, currentTripId, setCurrentTripId, currentTripColumns, setCurrentTripColumns }} />
     </div>
   );
 }

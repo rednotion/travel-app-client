@@ -15,40 +15,75 @@ import Toolbar from "../components/Toolbar.js";
 
 import "../styles/HoverStyles.css"
 
-
-import { info as data_info } from "../data/data_trips.js"
-
-
 export default function Days(props) {
-	const tripId = props.match.params.id
-	const [allDays, setAllDays] = useState({})
-	const [isLoading, setIsLoading] = useState(true)
-	const [whatInfo, setWhatInfo] = useState("__home__")
-	const [letEdit, setLetEdit] = useState(false)
+	const tripId = props.match.params.tripId;
+    const [tripColIds, setTripColIds] = useState([]);
+	const [allDays, setAllDays] = useState({});
+	const [isLoading, setIsLoading] = useState(true);
+	const [whatInfo, setWhatInfo] = useState("__home__");
+	const [letEdit, setLetEdit] = useState(false);
 	const [fields, handleFieldChange] = useFormFields({
-	    placeName: "",
-	    placeLocation: "",
-	    tripEnd: "",
-	    tripLocation: ""
+	    colName: "",
+	    colIds: "",
+	    colLodging: "",
   	});
 
 	// On load, load trips 
 	useEffect(() => {
+        function loadTrip() { return API.get("travel", `/trips/${props.match.params.tripId}`); }
+
+        function loadCol(colId) { return API.get("travel", `/cols/${colId}`); }
+
         async function onLoad() {
-              try {
-                  const userDays = await loadAllDays();
-                  setAllDays(userDays);
-              } catch (e) {
-                  alert(e);
-              }
-              setIsLoading(false)
-          }
-          onLoad();
+            // load trip API if you need to set the columns
+            try {
+                    const infoOnTrip = await loadTrip();
+                    console.log("info on trip received")
+                    console.log(infoOnTrip["colIds"])
+
+                    console.log("now setting tripColIds")
+                    setTripColIds(infoOnTrip.colIds)
+                    console.log(tripColIds)
+
+                    const nCols = tripColIds.length
+                    var dayOutput = []
+                    var response
+                    for (var i = 0; i < nCols; i++) {
+                        console.log("calling column=", tripColIds[i])
+                        response = await loadCol(tripColIds[i]);
+                        dayOutput.push(response)
+                    }
+                    
+                    // props.setCurrentTripId(props.match.params.tripId)
+                    // props.setCurrentTripColumns(infoOnTrip.colIds)
+                    setAllDays(dayOutput);
+                    console.log(allDays)
+                } catch (e) {
+                    alert(e);
+            }
+            setIsLoading(false)
+        }
+        onLoad();
     }, []);
 
-    function loadAllDays() {
-        return data_info.columns
-        /*return API.get("notes", "/notes");*/
+    
+
+    
+
+    async function loadAllDays() {
+        const nCols = tripColIds.length
+        var dayOutput = []
+        var response
+        for (var i = 0; i < nCols; i++) {
+            console.log(tripColIds[i])
+            try {
+                response = await API.get("travel", `/cols/${tripColIds[i]}`);
+                dayOutput.push(response)
+            } catch(e) {
+                alert(e);
+            }
+        }
+        return dayOutput
     }
 
     function loadDetails() {
@@ -62,7 +97,7 @@ export default function Days(props) {
     		<p></p>
     		Current activities:<br></br>
     		<ol>
-    			{dayActivities.map(place => <li>{data_info.items[place].description}</li>)}
+    			{dayActivities.map(place => <li>{place}</li>)}
     		</ol>
     		</div>
     	);
@@ -149,7 +184,7 @@ export default function Days(props) {
 		</InvisiblePanel>
 
 		<InvisiblePanel>
-		{renderDayLinks(allDays)}
+		{!isLoading && renderDayLinks(allDays)}
 		</InvisiblePanel>
 
 		</AlignPanels>

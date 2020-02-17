@@ -5,7 +5,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from 'styled-components';
 import Popup from "reactjs-popup";
-import "../styles/HoverStyles.css"
+import "../styles/HoverStyles.css";
+import { useFormFields } from "../libs/hooksLib";
 
 import { BackgroundPanel, PanelTitle, PanelSubtitle } from "../styles/Pages"
 import { Title, AlignColumns, ColumnContainer, AlignItems, 
@@ -90,7 +91,6 @@ function generateItemTitle(place, isDragging) {
   }
 }
 
-function handleFieldChange() {}
 function handleSubmit() {}
 function formField(title, id, field, type) {
     return(
@@ -106,6 +106,7 @@ function formField(title, id, field, type) {
       );
   }
 
+function handleFieldChange() {}
 function launchPopUp() {
   const fields = {name: 'hello', location: 'x=10,y=10', duration:10}
   return(
@@ -120,13 +121,13 @@ function launchPopUp() {
 
       <BackgroundPanel>
         <form onSubmit={handleSubmit}>
-          <FormGroup controlId="formgroup1" bsSize="small">
+          <FormGroup controlId="name" bsSize="small">
             <ControlLabel>Title</ControlLabel>
             <FormControl
               autoFocus
               type="content"
               onChange={handleFieldChange}
-              value="hello"
+              value={fields.name}
             />
           </FormGroup>
         </form>
@@ -347,7 +348,7 @@ class App extends Component {
 }
 
 export default function Planner(props) {
-  console.log(props.match.params.id)
+  console.log(props.match.params.tripId)
   const newApp = new App
   newApp.tripId = props.match.params.id
 	return(newApp)

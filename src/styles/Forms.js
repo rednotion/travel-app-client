@@ -6,3 +6,14 @@ export const ItemFormPanel = styled.div`
 
 	flex-grow: 1;
 `
+
+export const FormRow = styled.div`
+	display: flex;
+	flex-direction: row;
+`
+export const FormColumn = styled.div`
+	padding: 5px;
+
+	width: 100px;
+	flex-grow: 1;
+`;

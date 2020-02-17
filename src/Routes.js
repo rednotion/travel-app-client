@@ -27,11 +27,11 @@ export default function Routes({ appProps }) {
       <UnauthenticatedRoute path="/login" exact component={Login} appProps={appProps} />
       <UnauthenticatedRoute path="/signup" exact component={Signup} appProps={appProps} />
       { /* If you are logged OUT, these routes should go to LOGIN */}
-      <AppliedRoute path="/trips" exact component={MyTrips} appProps={appProps} />
-      <AppliedRoute path="/trip/:id" exact component={Trip} appProps={appProps} />
-      <AppliedRoute path="/plan/:id" exact component={Planner} appProps={appProps} />
-      <AppliedRoute path="/places/:id" exact component={Places} appProps={appProps} />
-      <AppliedRoute path="/days/:id" exact component={Days} appProps={appProps} />
+      <AuthenticatedRoute path="/trips" exact component={MyTrips} appProps={appProps} />
+      <AuthenticatedRoute path="/trip/:tripId" exact component={Trip} appProps={appProps} />
+      <AuthenticatedRoute path="/plan/:tripId" exact component={Planner} appProps={appProps} />
+      <AuthenticatedRoute path="/places/:tripId" exact component={Places} appProps={appProps} />
+      <AuthenticatedRoute path="/days/:tripId" exact component={Days} appProps={appProps} />
       { /* Finally, catch all unmatched routes */ }
       <Route component={NotFound} />
     </Switch>
