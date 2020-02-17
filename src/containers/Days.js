@@ -31,24 +31,21 @@ export default function Days(props) {
 	useEffect(() => {
         function loadTrip() { return API.get("travel", `/trips/${props.match.params.tripId}`); }
 
-        function loadCol(colId) { return API.get("travel", `/cols/${colId}`); }
+        function loadAllCols() { return API.get("travel", `/cols/${props.match.params.tripId}`); }
 
         async function onLoad() {
             // load trip API if you need to set the columns
             try {
+                    // set column order
                     const infoOnTrip = await loadTrip();
-                    const nCols = infoOnTrip.colIds.length
-                    var dayOutput = {}
-                    var response
-                    for (var i = 0; i < nCols; i++) {
-                        console.log("calling column=", infoOnTrip.colIds[i])
-                        response = await loadCol(infoOnTrip.colIds[i]);
-                        dayOutput[response.colId] = response
-                    }
-                    // props.setCurrentTripId(props.match.params.tripId)
-                    // props.setCurrentTripColumns(infoOnTrip.colIds)
-                    setAllDays(dayOutput);
                     props.setCurrentTripColumns(infoOnTrip.colIds)
+                    
+                    const dayOutput = await loadAllCols();
+                    var dayOutputReformat = {}
+                    for (var i=0; i < dayOutput.length; i++) {
+                        dayOutputReformat[dayOutput[i].colId] = dayOutput[i]
+                    }
+                    setAllDays(dayOutputReformat);
                 } catch (e) {
                     alert(e);
             }
@@ -112,9 +109,8 @@ export default function Days(props) {
     }
 
     function renderDayLinks(allDays) {
-        console.log(allDays)
         if (allDays) {
-          const dayLinks = Object.keys(allDays).map(colKey => (placeLink(allDays[colKey].colId, allDays[colKey].colName)))
+          const dayLinks = props.currentTripColumns.map(colKey => (placeLink(allDays[colKey].colId, allDays[colKey].colName)))
           return(
             <div>
             	<span className="left"><PanelTitle>Your Days</PanelTitle></span>
