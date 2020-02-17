@@ -7,12 +7,12 @@ export default {
   },
   apiGateway: {
     REGION: "us-east-1",
-    URL: "https://sldlnbkj35.execute-api.us-east-1.amazonaws.com/dev"
+    URL: "https://9yvj2145x1.execute-api.us-east-1.amazonaws.com/dev"
   },
   cognito: {
     REGION: "us-east-1",
-    USER_POOL_ID: "us-east-1_zmsYOxHfn",
-    APP_CLIENT_ID: "58o48s2m5671bm4lvjen6v7pgc",
-    IDENTITY_POOL_ID: "us-east-1:e88adfe8-6df9-49ba-81c5-166ca4a016d2"
+    USER_POOL_ID: "us-east-1_TRllrApcP",
+    APP_CLIENT_ID: "4b49hdtiuo10k9fab3fj2g8m9s",
+    IDENTITY_POOL_ID: "us-east-1:88735a3d-b61a-4817-9ea6-286f190e80ea"
   }
 };
