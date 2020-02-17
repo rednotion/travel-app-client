@@ -17,7 +17,6 @@ import "../styles/HoverStyles.css"
 
 export default function Days(props) {
 	const tripId = props.match.params.tripId;
-    const [tripColIds, setTripColIds] = useState([]);
 	const [allDays, setAllDays] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [whatInfo, setWhatInfo] = useState("__home__");
@@ -38,26 +37,17 @@ export default function Days(props) {
             // load trip API if you need to set the columns
             try {
                     const infoOnTrip = await loadTrip();
-                    console.log("info on trip received")
-                    console.log(infoOnTrip["colIds"])
-
-                    console.log("now setting tripColIds")
-                    setTripColIds(infoOnTrip.colIds)
-                    console.log(tripColIds)
-
-                    const nCols = tripColIds.length
-                    var dayOutput = []
+                    const nCols = infoOnTrip.colIds.length
+                    var dayOutput = {}
                     var response
                     for (var i = 0; i < nCols; i++) {
-                        console.log("calling column=", tripColIds[i])
-                        response = await loadCol(tripColIds[i]);
-                        dayOutput.push(response)
+                        console.log("calling column=", infoOnTrip.colIds[i])
+                        response = await loadCol(infoOnTrip.colIds[i]);
+                        dayOutput[response.colId] = response
                     }
-                    
                     // props.setCurrentTripId(props.match.params.tripId)
                     // props.setCurrentTripColumns(infoOnTrip.colIds)
                     setAllDays(dayOutput);
-                    console.log(allDays)
                 } catch (e) {
                     alert(e);
             }
@@ -66,50 +56,17 @@ export default function Days(props) {
         onLoad();
     }, []);
 
-    
 
-    
-
-    async function loadAllDays() {
-        const nCols = tripColIds.length
-        var dayOutput = []
-        var response
-        for (var i = 0; i < nCols; i++) {
-            console.log(tripColIds[i])
-            try {
-                response = await API.get("travel", `/cols/${tripColIds[i]}`);
-                dayOutput.push(response)
-            } catch(e) {
-                alert(e);
-            }
-        }
-        return dayOutput
-    }
-
-    function loadDetails() {
-        var dayActivities = allDays[whatInfo].taskIds
-        dayActivities = dayActivities.filter(taskId => taskId.startsWith("place"))
-
-    	return (
-    		<div>
-    		<h2>{allDays[whatInfo].description}</h2>
-    		<Button onClick={() => setLetEdit(true)}>{<Glyphicon glyph="edit"/>} Edit</Button>
-    		<p></p>
-    		Current activities:<br></br>
-    		<ol>
-    			{dayActivities.map(place => <li>{place}</li>)}
-    		</ol>
-    		</div>
-    	);
-    }
+    function onEditFormSubmit() {}
+    function validateForm() {}
 
     function loadEditForm() {
     	return (
     		<div>
-    		<h2>{allDays[whatInfo].description}</h2>
+    		<h2>{allDays[whatInfo].colName}</h2>
     		<form onSubmit={onEditFormSubmit}>
-    		{formField("Title*", "placeName", fields.placeName, "content", handleFieldChange)}
-    		{formField("Location*", "placeLocation", fields.placeLocation, "content", handleFieldChange)}
+    		{formField("Title*", "placeName", fields.colName, "content", handleFieldChange)}
+    		{formField("Location*", "placeLocation", fields.colLocation, "content", handleFieldChange)}
     		<LoaderButton
 	          block
 	          type="submit"
@@ -124,13 +81,11 @@ export default function Days(props) {
     		</div>
     	)
     }
-    function onEditFormSubmit() {}
-    function validateForm() {}
-
+    
     function loadFrame() {
     	// home first
     	if (whatInfo === "__home__") {
-    		return (<div>Select a piece to view or edit details.</div>);
+    		return (<div>Select a day to view or edit details.</div>);
     	}
 
     	// otherwise, one of the existing items
@@ -141,27 +96,27 @@ export default function Days(props) {
     	}
     }
 
-    function handleLinkClick(placeId) {
-    	setWhatInfo(placeId); // change which frame to show
+    function handleLinkClick(colId) {
+    	setWhatInfo(colId); // change which frame to show
     	setLetEdit(false); // default to info page
     }
 
-    function placeLink(placeId, title) {
+    function placeLink(colId, title) {
     	// <ListGroupItem key={placeId} onClick={() => loadDetails(placeId)}>
 	    return(
-	        <ListGroupItem key={placeId} onClick={() => handleLinkClick(placeId)}>
+	        <ListGroupItem key={colId} onClick={() => handleLinkClick(colId)}>
 	            <b><Glyphicon glyph="screenshot"/></b>&nbsp;&nbsp;{title}
 	        </ListGroupItem>
 	    );
     }
 
     function renderDayLinks(allDays) {
+        console.log(allDays)
         if (allDays) {
-          const dayLinks = Object.keys(allDays).filter(key => !key.includes("wishlist")).map(
-          	key => (placeLink(allDays[key].id, allDays[key].description)))
+          const dayLinks = Object.keys(allDays).map(colKey => (placeLink(allDays[colKey].colId, allDays[colKey].colName)))
           return(
             <div>
-            	<span class="left"><PanelTitle>Your Days</PanelTitle></span>
+            	<span className="left"><PanelTitle>Your Days</PanelTitle></span>
 	            {dayLinks}
             </div>
           );
@@ -170,6 +125,32 @@ export default function Days(props) {
       }
 
     function addPlace() {}
+
+    function loadDetails() {
+        var dayActivities = allDays[whatInfo].taskIds
+        dayActivities = dayActivities.filter(taskId => taskId.startsWith("place"))
+
+        return (
+            <div>
+            <h2>{allDays[whatInfo].colName}</h2>
+            <Button onClick={() => setLetEdit(true)}>{<Glyphicon glyph="edit"/>} Edit</Button>
+            <p></p>
+            {dayActivities.length > 0 ? (
+                <div>
+                Current activities:<br></br>
+                <ol>
+                    {dayActivities.map(taskId => <li>{taskId}</li>)}
+                </ol>
+                </div>
+                ) : (
+                <div>
+                No activities yet. Plan one!
+                </div>
+            )} 
+            
+            </div>
+        );
+    }
 
 
 	return (
