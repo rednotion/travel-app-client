@@ -5,7 +5,7 @@ import "./App.css";
 import Routes from "./Routes.js";
 import { LinkContainer } from "react-router-bootstrap";
 // link containers is how we'll get router to work w bootstrap
-import { Auth } from "aws-amplify";
+import { Auth, API } from "aws-amplify";
 import { useFormFields } from "./libs/hooksLib";
 
 { /* The <> or Fragment component can be thought of as a placeholder component. 
@@ -17,14 +17,19 @@ this component but we don’t want to render any extra HTML. */ }
 function App(props) {
   const [isAuthenticated, userHasAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentTripId, setCurrentTripId] = useState(null);
-  const [currentTripColumns, setCurrentTripColumns] = useState(null)
+  const [tripInfo, setTripInfo] = useState(null);
+  const [colInfo, setColInfo] = useState(null);
+  const [taskInfo, setTaskInfo] = useState(null);
 
   useEffect(() => {onLoad();}, []);
   { /* useEffect has 2 arguments: Function; Array of variables 
   Function will be called everytime a component is rendered
   Array of variables say, rerun ONLY IF variables have changed*/}
+
   async function onLoad() {
+    // first, check for user
     try {
       await Auth.currentSession();
       userHasAuthenticated(true);
@@ -35,6 +40,58 @@ function App(props) {
       }
     }
     setIsAuthenticating(false);
+
+    // then check for trip
+    const tripId = deduceLocation()
+
+    if (tripId) {
+      var response
+      if ((tripId !== currentTripId) | (tripInfo === null) | 
+        (colInfo === null) | (taskInfo === null)) {
+        try {
+          setCurrentTripId(tripId);
+          response = await loadTrip(tripId)
+          setTripInfo(response)
+          console.log("trip response")
+          console.log(response)
+
+          response = await loadAllColumns(tripId)
+          setColInfo(refactorResponse(response, 'colId'))
+          console.log("col response")
+          console.log(response)
+
+          response = await loadAllTasks(tripId)
+          setTaskInfo(refactorResponse(response, 'taskId'))
+          console.log("task response")
+          console.log(response)
+
+        } catch(e) {
+          alert(e);
+        }
+      } 
+    }
+
+    setIsLoading(false);
+  }
+
+  function deduceLocation () {
+    const pathItems = (props.location.pathname).split("/")
+    if (pathItems.length > 2) {
+      return pathItems[2]
+    } else {
+      return null
+    }
+  }
+
+  function loadTrip(tripId) { return API.get("travel", `/trips/${tripId}`); }
+  function loadAllColumns(tripId) { return API.get("travel", `/cols/${tripId}`); }
+  function loadAllTasks(tripId) { return API.get("travel", `/tasks/${tripId}`); }
+  function refactorResponse(response, key) {
+    var refactoredResponse = {}
+    for (var i=0; i < response.length; i++) {
+      refactoredResponse[response[i][key]] = response[i]
+    }
+    return refactoredResponse
   }
 
   async function handleLogout() {
@@ -45,7 +102,7 @@ function App(props) {
 
 
   return (
-    !isAuthenticating &&
+    (!isAuthenticating & !isLoading)&&
     <div className="App container">
       <Navbar fluid collapseOnSelect>
         <Navbar.Header>
@@ -75,7 +132,7 @@ function App(props) {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Routes appProps={{ isAuthenticated, userHasAuthenticated, currentTripId, setCurrentTripId, currentTripColumns, setCurrentTripColumns }} />
+      <Routes appProps={{ isAuthenticated, userHasAuthenticated, currentTripId, setCurrentTripId, tripInfo, setTripInfo, taskInfo, setTaskInfo, colInfo, setColInfo }} />
     </div>
   );
 }

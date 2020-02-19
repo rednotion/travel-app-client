@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { FormGroup, FormControl, ControlLabel, Glyphicon, Button } from "react-bootstrap";
 import ReactDOM from "react-dom";
 import { LinkContainer } from "react-router-bootstrap";
@@ -7,9 +7,11 @@ import styled from 'styled-components';
 import Popup from "reactjs-popup";
 import "../styles/HoverStyles.css";
 import { useFormFields } from "../libs/hooksLib";
+import { API } from "aws-amplify";
+import LoaderButton from "../components/LoaderButton";
 
-import { BackgroundPanel, PanelTitle, PanelSubtitle } from "../styles/Pages"
-import { Title, AlignColumns, ColumnContainer, AlignItems, 
+import { BackgroundPanel, PanelTitle, PanelSubtitlem, InvisiblePanel } from "../styles/Pages"
+import { Title, AlignColumns, ColumnContainer, AlignItems, ColumnToolbar,
   ItemContainer, AlignRuler, Ruler, RulerNotch, EmptyRulerNotch, DriveContainer,
   WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer } from "../styles/DDList.js"
 import Toolbar from "../components/Toolbar.js";
@@ -18,14 +20,16 @@ import { info, distances } from '../data/data_trips.js'
 
 //////////
 
+
 function generateTime(startTime, endTime) {
-  const hours = [...Array(endTime).keys()].slice(startTime, endTime)
+  const startHour = parseInt(startTime.slice(0,2)) + 1
+  const endHour = parseInt(endTime.slice(0,2)) + 1
+  const hours = [...Array(endHour).keys()].slice(startHour, endHour)
   const labels = hours.map(lab => (
     (lab < 12) ? (lab + "am") : ((lab === 12) ? (lab + "pm") : (lab-12 + "pm"))
   ))
   return labels
 }
-
 
 const minTime = Math.min(...info.colOrder.map(colId => info.columns[colId].startTime))
 
@@ -41,29 +45,31 @@ function renderEmptyNotches(colId, startTime, minTime, isDraggingOver) {
   }
 }
 
-function getDistance(origin, destination, distances) {
-  return distances[origin][destination]
+
+
+// function generateNearLocations(itemId, distances, info) {
+//   // returns ['locationName', distance]
+//   const distanceDict = distances[itemId]
+//   var items = Object.keys(distanceDict).map(function(key) {
+//     return [key, distanceDict[key]];
+//   });
+//   // Sort the array based on the second element
+//   items.sort(function(first, second) {
+//     return first[1] - second[1];
+//   });
+//   items = items.filter(pair => pair[0] != itemId)
+
+//   const nearLocations = items.map(each => ([info.items[each[0]].description, each[1]]))
+
+//   return nearLocations.slice(0,3)
+// }
+
+function generateNearLocations(taskId) {
+  return [['PlaceA', 10], ['PlaceB', 20], ['PlaceC', 30]]
 }
 
-function generateNearLocations(itemId, distances, info) {
-  // returns ['locationName', distance]
-  const distanceDict = distances[itemId]
-  var items = Object.keys(distanceDict).map(function(key) {
-    return [key, distanceDict[key]];
-  });
-  // Sort the array based on the second element
-  items.sort(function(first, second) {
-    return first[1] - second[1];
-  });
-  items = items.filter(pair => pair[0] != itemId)
-
-  const nearLocations = items.map(each => ([info.items[each[0]].description, each[1]]))
-
-  return nearLocations.slice(0,3)
-}
-
-function launchToolTip(itemId, distances, info) {
-  const nearLocations = generateNearLocations(itemId, distances, info)
+function launchToolTip(taskId) {
+  const nearLocations = generateNearLocations(taskId)
   return (
     <Popup
       trigger={<span class="LocationTip">Where next?</span>}
@@ -76,17 +82,17 @@ function launchToolTip(itemId, distances, info) {
   )
 }
 
-function generateItemTitle(place, isDragging) {
+function generateItemTitle(taskItem, isDragging) {
   // const nearestPlaceName = info[nearestPlace].locationName
-  if (place.type == 'location'){
+  if (taskItem.taskType == 'location'){
     return(
       <div>
-      <span class="left"><b>{place.description}</b></span>
+      <span class="left"><b>{taskItem.taskName}</b> <small><i>({taskItem.taskDuration}h)</i></small></span>
       {(!isDragging) ? <span class="right">{launchPopUp()}</span> : ""}
       </div>
     ) } else {
     return(
-      <center><small>{place.description}</small></center>
+      <center><small>{taskItem.taskName}</small></center>
       )
   }
 }
@@ -137,24 +143,38 @@ function launchPopUp() {
   );
 }
 
-function rebuildList(places, distances) {
+function getDistance(origin, destination) {
+  return 2
+}
+
+function handleUpdate() {
+  console.log("Update form")
+}
+function rebuildList(tripId, locationIds) {
   var idx, driveId, runningIdx;
-  var newTaskIds = Array.from(places)
+  var newTaskIds = Array.from(locationIds)
   var newDriveItems = new Object()
-  const maxIdx = places.length - 1
+  var driveData
+  var response
+  const maxIdx = locationIds.length - 1
 
   runningIdx = 1
 
+  console.log(locationIds)
+
   for (idx = 0; idx < maxIdx; idx++) {
-    driveId = 'drive-' + places[idx].toString() + '-to-' + (places[idx + 1]).toString()
-    var driveTime = getDistance(places[idx], places[idx+1], distances)
-    newTaskIds.splice(runningIdx, 0, driveId) // add to new tasks
-    newDriveItems[driveId] = {
-      id: driveId, 
-      type: 'drive', 
-      duration: driveTime,
-      description: "Estimated drive time = " + driveTime.toString() + " hours"
+    driveId = 'drive-' + locationIds[idx].toString() + '-to-' + (locationIds[idx + 1]).toString()
+    var driveTime = getDistance(locationIds[idx], locationIds[idx+1])
+    driveData = {
+      taskIdHolder: driveId,
+      tripId: tripId,
+      taskDuration: driveTime,
+      taskName: "Estimated drive time = " + driveTime.toString() + " hours"
     }
+    console.log("new drive item")
+    console.log(driveData)
+    newTaskIds.splice(runningIdx, 0, driveData.taskIdHolder) // add to new tasks
+    newDriveItems[driveData.taskIdHolder] = driveData
     runningIdx += 2 // reset running index
   }
 
@@ -169,65 +189,57 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = info
-    this.distances = distances
     this.onDragEnd = this.onDragEnd.bind(this);
-    this.minTime = minTime
+    this.minTime = "08:00"
     this.tripId = ''
+    this.isLoading = false
+    this.tripInfo = null
+    this.colInfo = null
+    this.taskInfo = null
   }
 
-
-
   onDragEnd = results => {
-    var itemList = this.state.items
     const { destination, source, draggableId } = results;
 
     // start with fixing source list
-    const sourceTaskIds = this.state.columns[source.droppableId].taskIds
+    const sourceTaskIds = this.colInfo[source.droppableId].taskIds
     sourceTaskIds.splice(sourceTaskIds.indexOf(draggableId), 1)
     // fix destination list - more complicated
-    const destinationTaskIds = this.state.columns[destination.droppableId].taskIds
+    const destinationTaskIds = this.colInfo[destination.droppableId].taskIds
     destinationTaskIds.splice(destination.index, 0, draggableId)
 
-
+    // initialize column info
     var newColumns = {
-      ...this.state.columns,
+      ...this.colInfo,
     }
 
     // Update WISHLIST (no drive items)
-    if ( this.state.columns[source.droppableId].type !== 'wishlist') {
+    if ( this.colInfo[source.droppableId].colType !== 'wishlist') {
       // now for both lists, we regenerate the distances
       const sourcePlaces = sourceTaskIds.filter(tag => tag.startsWith('place'))
-      const [newSourceTaskIds, newSourceDriveItems] = rebuildList(sourcePlaces, this.distances)
+      const [newSourceTaskIds, newSourceDriveItems] = rebuildList(this.tripId, sourcePlaces)
       for (const [key, value] of Object.entries(newSourceDriveItems)) { 
-        if (!Object.keys(itemList).includes(key)) { itemList[key] = value }
+        if (!Object.keys(this.taskInfo).includes(key)) { this.taskInfo[key] = value }
       }
-    const newSourceColumn = {
-      ...this.state.columns[source.droppableId],
-      taskIds: newSourceTaskIds};
-    newColumns[newSourceColumn.id] = newSourceColumn
+      this.colInfo[source.droppableId].taskIds = newSourceTaskIds
+      
     }
 
-    if ( this.state.columns[destination.droppableId].type !== 'wishlist') {
-      // repeat for destination
+    if ( this.colInfo[destination.droppableId].colType !== 'wishlist') {
       const destinationPlaces = destinationTaskIds.filter(tag => tag.startsWith('place'))
-      const [newDestinationTaskIds, newDestinationDriveItems] = rebuildList(destinationPlaces, this.distances)
+      // const [newDestinationTaskIds, newDestinationDriveItems] = 
+      const [newDestinationTaskIds, newDestinationDriveItems] = rebuildList(this.tripId, destinationPlaces)
       for (const [key, value] of Object.entries(newDestinationDriveItems)) { 
-        if (!Object.keys(itemList).includes(key)) { itemList[key] = value }
+        if (!Object.keys(this.taskInfo).includes(key)) { this.taskInfo[key] = value };
+        console.log(key)
+        console.log(this.taskInfo)
       }
-    const newDestinationColumn = {
-      ...this.state.columns[destination.droppableId],
-      taskIds: newDestinationTaskIds};
-    newColumns[newDestinationColumn.id] = newDestinationColumn
+      console.log('old ColInfo')
+      console.log(this.colInfo)
+      console.log("now updating the main ColInfo")
+      this.colInfo[destination.droppableId].taskIds = newDestinationTaskIds
+      console.log(this.colInfo)
     }
-
-    const newState = {
-      ...this.state,
-      items: itemList,
-      columns: newColumns,
-    }
-
-    this.setState(newState)
-
   }
 
   
@@ -237,13 +249,13 @@ class App extends Component {
   render() {
     return (
       <div>
-
+      
       { Toolbar(this.tripId) }
 
       <DragDropContext onDragEnd={this.onDragEnd}>
         <AlignColumns>
         { /* Daily Columns */}
-        {this.state.colOrder.map((colId, index) => (
+        {this.tripInfo.colIds.map((colId, index) => (
 	        <Droppable droppableId={colId} >
 	          {(provided, snapshot) => (
 	            <ColumnContainer
@@ -253,44 +265,44 @@ class App extends Component {
 	            >
                 <Title>
                 <div>
-                <span class="left">{this.state.columns[colId].description}</span>
+                <span class="left">{this.colInfo[colId].colName}</span>
                 <span class="right">{<Glyphicon glyph="pushpin"/>}</span>
                 </div>
                 </Title>
-                  {renderEmptyNotches(colId, this.state.columns[colId].startTime, this.minTime, snapshot.isDraggingOver)}
+                  {renderEmptyNotches(colId, this.colInfo[colId].colStartTime, this.minTime, snapshot.isDraggingOver)}
                   <AlignRuler>
                   <Ruler pullLeft isDraggingOver={snapshot.isDraggingOver}>
-                    {generateTime(this.state.columns[colId].startTime, this.state.columns[colId].endTime).map(label => (
+                    {generateTime(this.colInfo[colId].colStartTime, this.colInfo[colId].colEndTime).map(label => (
                       <RulerNotch isDraggingOver={snapshot.isDraggingOver}>
                       {label}
                       </RulerNotch>))}
                   </Ruler>
 	              	<AlignItems>
                   { /* Item */}
-	              	{this.state.columns[colId].taskIds.map((item, index) => (
-                    (this.state.items[item].type === 'location') 
+	              	{this.colInfo[colId].taskIds.map((taskId, index) => (
+                    (this.taskInfo[taskId].taskType === 'location') 
                     ? (
-  		                <Draggable key={item} draggableId={item} index={index}>
+  		                <Draggable key={taskId} draggableId={taskId} index={index}>
   		                  {(provided, snapshot) => (
   		                    <ItemContainer
   		                      ref={provided.innerRef}
   		                      {...provided.draggableProps}
   		                      {...provided.dragHandleProps}
   		                      isDragging={snapshot.isDragging}
-                            itemDuration={this.state.items[item].duration}
+                            itemDuration={this.taskInfo[taskId].taskDuration}
   		                    >
-                          <ItemTitle>{generateItemTitle(this.state.items[item], snapshot.isDragging)}</ItemTitle>
+                          <ItemTitle>{generateItemTitle(this.taskInfo[taskId], snapshot.isDragging)}</ItemTitle>
                           <ItemBody>
-                            {this.state.items[item].description} + "more words..."
+                            {this.taskInfo[taskId].taskName} + "more words..."
                           </ItemBody>
-                          <div>{launchToolTip(this.state.items[item].id, this.distances, this.state)}</div>
+                          <div>{launchToolTip(this.taskInfo[taskId].taskId)}</div>
   		                    </ItemContainer>
   		                  )}
   		                </Draggable>
                     )
                     :(
-                      <DriveContainer itemDuration={this.state.items[item].duration}>
-                        {generateItemTitle(this.state.items[item])}
+                      <DriveContainer itemDuration={this.taskInfo[taskId].taskDuration}>
+                        {generateItemTitle(this.taskInfo[taskId])}
                       </DriveContainer>
                     )))}
 	              	</AlignItems>
@@ -302,7 +314,17 @@ class App extends Component {
 	    ))}
       
       { /* Wishlist Column */}
-      {this.state.wishlistColOrder.map((colId, index) => (
+      <ColumnToolbar>
+      <LoaderButton
+          block
+          onClick={handleUpdate}
+          bsSize="large"
+          bsStyle="primary"
+          isLoading={this.isLoading}
+      >
+        Update
+      </LoaderButton>
+      {this.tripInfo.wishlistIds.map((colId, index) => (
           <Droppable droppableId={colId} >
             {(provided, snapshot) => (
               <WishlistContainer
@@ -310,13 +332,13 @@ class App extends Component {
                 ref={provided.innerRef}
                 isDraggingOver={snapshot.isDraggingOver}
               >
-                <Title>{this.state.columns[colId].description}</Title>
+                <Title>{this.colInfo[colId].colName}</Title>
                   <AlignItems>
                   { /* Item */}
-                  {this.state.columns[colId].taskIds.map((item, index) => (
-                    (this.state.items[item].type === 'location') 
-                    ? (
-                      <Draggable key={item} draggableId={item} index={index}>
+                  {this.colInfo[colId].taskIds.map((taskId, index) => (
+                    (this.taskInfo[taskId].taskType === 'location') 
+                    && (
+                      <Draggable key={taskId} draggableId={taskId} index={index}>
                         {(provided, snapshot) => (
                           <WishlistItemContainer
                             ref={provided.innerRef}
@@ -324,15 +346,10 @@ class App extends Component {
                             {...provided.dragHandleProps}
                             isDragging={snapshot.isDragging}
                           >
-                            {generateItemTitle(this.state.items[item], snapshot.isDragging)}
+                            {generateItemTitle(this.taskInfo[taskId], snapshot.isDragging)}
                           </WishlistItemContainer>
                         )}
                       </Draggable>
-                    )
-                    :(
-                      <DriveContainer itemDuration={this.state.items[item].duration}>
-                        {generateItemTitle(this.state.items[item])}
-                      </DriveContainer>
                     )))}
                   </AlignItems>
                   {provided.placeholder}
@@ -340,6 +357,7 @@ class App extends Component {
             )}
           </Droppable>
       ))}
+      </ColumnToolbar>
       </AlignColumns>
       </DragDropContext>
       </div>
@@ -348,8 +366,12 @@ class App extends Component {
 }
 
 export default function Planner(props) {
-  console.log(props.match.params.tripId)
   const newApp = new App
-  newApp.tripId = props.match.params.id
+  console.log(props.currentTripId)
+  newApp.tripId = props.currentTripId
+  newApp.tripInfo = props.tripInfo
+  newApp.colInfo = props.colInfo
+  newApp.taskInfo = props.taskInfo
+
 	return(newApp)
 }

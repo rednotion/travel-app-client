@@ -7,7 +7,6 @@ export function formField(title, id, field, type, changeFunction) {
         <FormGroup controlId={id} bsSize="small">
           <ControlLabel>{title}</ControlLabel>
           <FormControl
-            autoFocus
             type={type}
             onChange={changeFunction}
             value={field}

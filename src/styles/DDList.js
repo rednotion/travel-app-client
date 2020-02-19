@@ -15,6 +15,14 @@ export const Title = styled.h3`
 export const AlignColumns = styled.div`
 	display: flex;
 `;
+export const ColumnToolbar = styled.div`
+  margin: 8px;
+  padding: 0px;
+  min-width: 200px;
+  flex-grow: 1;
+  display: flex,
+  flex-direction: column, 
+`
 export const ColumnContainer = styled.div`
   background: ${props => (props.isDraggingOver ? '#a1bcc3' : '#ebece9')};
 
@@ -29,8 +37,6 @@ export const ColumnContainer = styled.div`
 `;
 export const WishlistContainer = styled.div`
   background: ${props => (props.isDraggingOver ? '#8A9EDB' : '#A2A2A2')};
-
-  margin: 8px;
 
   min-width: 200px;
   max-width: 300px;
