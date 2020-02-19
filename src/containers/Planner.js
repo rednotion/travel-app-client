@@ -147,9 +147,49 @@ function getDistance(origin, destination) {
   return 2
 }
 
-function handleUpdate() {
-  console.log("Update form")
+async function handleUpdate(colInfo, taskInfo, isLoading) {
+  isLoading = true;
+
+  var response
+  var realDriveDict = {}
+
+  // update tasks first
+  const fakeDrives = Object.keys(taskInfo).filter(key => key.startsWith('fakedrive'))
+  console.log(fakeDrives)
+  for (var i=0; i < fakeDrives.length; i++) {
+    // upload each new drive, and add the real taskId to dictionary
+    try {
+      response = await API.post("travel", "/tasks/drive", {body: taskInfo[fakeDrives[i]]})
+      realDriveDict[fakeDrives[i]] = response.taskId
+    } catch (e) {
+      alert(e);
+    }
+  }
+
+  var editedTaskIds = []
+  var newColData = {}
+  // then update each column
+  const columnIds = Object.keys(colInfo)
+  for (var i=0; i < columnIds.length; i++) {
+    // change the fake drive keys
+    console.log(columnIds[i]);
+    editedTaskIds = colInfo[columnIds[i]].taskIds.map(taskId => realDriveDict[taskId] || taskId);
+    // create a new body
+    newColData = {
+      ...colInfo[columnIds[i]],
+      'taskIds': editedTaskIds
+    }
+    // post the body
+    try {
+      await API.put("travel", `/cols/${newColData.tripId}/${columnIds[i]}`, {body: newColData})
+    } catch (e) {
+      alert(e);
+    }
+  }
+
+  isLoading = false;
 }
+
 function rebuildList(tripId, locationIds) {
   var idx, driveId, runningIdx;
   var newTaskIds = Array.from(locationIds)
@@ -163,7 +203,7 @@ function rebuildList(tripId, locationIds) {
   console.log(locationIds)
 
   for (idx = 0; idx < maxIdx; idx++) {
-    driveId = 'drive-' + locationIds[idx].toString() + '-to-' + (locationIds[idx + 1]).toString()
+    driveId = 'fakedrive-' + locationIds[idx].toString() + '-to-' + (locationIds[idx + 1]).toString()
     var driveTime = getDistance(locationIds[idx], locationIds[idx+1])
     driveData = {
       taskIdHolder: driveId,
@@ -231,14 +271,8 @@ class App extends Component {
       const [newDestinationTaskIds, newDestinationDriveItems] = rebuildList(this.tripId, destinationPlaces)
       for (const [key, value] of Object.entries(newDestinationDriveItems)) { 
         if (!Object.keys(this.taskInfo).includes(key)) { this.taskInfo[key] = value };
-        console.log(key)
-        console.log(this.taskInfo)
       }
-      console.log('old ColInfo')
-      console.log(this.colInfo)
-      console.log("now updating the main ColInfo")
       this.colInfo[destination.droppableId].taskIds = newDestinationTaskIds
-      console.log(this.colInfo)
     }
   }
 
@@ -317,7 +351,7 @@ class App extends Component {
       <ColumnToolbar>
       <LoaderButton
           block
-          onClick={handleUpdate}
+          onClick={() => {handleUpdate(this.colInfo, this.taskInfo, this.isLoading)}}
           bsSize="large"
           bsStyle="primary"
           isLoading={this.isLoading}
