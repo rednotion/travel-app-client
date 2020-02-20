@@ -5,10 +5,11 @@ const durationMultiplier = 60;
 const itemPadding = 3;
 
 // Column items
-export const Title = styled.h3`
-  background: #d3d4d1;
+export const Title = styled.h4`
+  color: #535353;
   margin-top: 0px;
-  padding: 10px;
+  margin-bottom: 8px;
+  padding: 15px;
   font-family: "Roboto";
   font-weight: "bold";
 `;
@@ -23,8 +24,10 @@ export const ColumnToolbar = styled.div`
   display: flex,
   flex-direction: column, 
 `
+
 export const ColumnContainer = styled.div`
-  background: ${props => (props.isDraggingOver ? '#a1bcc3' : '#ebece9')};
+  background: ${props => (props.isDraggingOver ? '#9fa8da' : '#eceff1')}; 
+  box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.1);
 
   margin: 8px;
 
@@ -36,7 +39,7 @@ export const ColumnContainer = styled.div`
   flex-direction: column;
 `;
 export const WishlistContainer = styled.div`
-  background: ${props => (props.isDraggingOver ? '#8A9EDB' : '#A2A2A2')};
+  background: ${props => (props.isDraggingOver ? '#9fa8da' : '#e8eaf6')};
 
   min-width: 200px;
   max-width: 300px;
@@ -72,25 +75,29 @@ export const ItemContainer = styled.div`
   height: ${props => props.itemDuration * durationMultiplier - itemPadding + "px"}
 `;
 export const ItemTitle = styled.div`
-  border-top-right-radius: 8px;
-  border-top-left-radius: 8px;
-  background: #CFABB4;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  background: #90caf9;
+  font-family: "Roboto";
   padding: 8px;
   min-height: 30px;
 `
 export const ItemBody = styled.div`
   margin: 8px;
+  font-family: "Roboto";
 `
 export const WishlistItemContainer = styled.div`
-  border-radius: 8px;
-  background: ${props => (props.isDragging ? '#99d3d5' : '#d1d8da')};
+  border-radius: 5px;
+  background: ${props => (props.isDragging ? '#9fa8da' : '#9fa8da')};
+  
   padding: 8px;
   min-height: 30px;
   margin-bottom: 10px;
-  margin-right: 8px;
-  margin-left: 8px;
+  margin-right: 10px;
+  margin-left: 10px;
 
-  font-family: "Open Sans", sans-serif;
+  font-family: "Roboto";
+  color: "#F1F1F1";
   font-size: 12px; 
 `
 
@@ -118,20 +125,21 @@ export const Ruler = styled.div`
   width: 30px;
   margin-left: 5px;
   margin-bottom: 5px;
-  background: ${props => (props.isDraggingOver ? '#a1bcc3' : '#b1b3b3')};
-  color: ${props => (props.isDraggingOver ? '#528190' : '#8e908f')};
+  background: ${props => (props.isDraggingOver ? '#9fa8da' : '#eceff1')};
+  color: ${props => (props.isDraggingOver ? '#9575cd' : '#546e7a')};
 `;
 export const RulerNotch = styled.div`
   height: ${durationMultiplier + "px"};
-  background: ${props => (props.isDraggingOver ? '#a1bcc3' : '#ebece9')};
+  background: ${props => (props.isDraggingOver ? '#9fa8da' : '#eceff1')};
   font-size: 10px;
   
   padding: 2px;
 `;
 export const EmptyRulerNotch = styled.div`
   height: ${durationMultiplier + "px"};
-  background: ${props => (props.isDraggingOver ? '#a1bcc3' : '#b1b3b3')};
+  background: ${props => (props.isDraggingOver ? '#7986cb' : '#b0bec5')};
   font-size: 10px;
+  margin-top: -10px;
   
   padding: 2px;
 `;

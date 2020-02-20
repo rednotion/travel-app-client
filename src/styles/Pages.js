@@ -23,7 +23,7 @@ export const Panel = styled.div`
 
 	border-radius: 0px;
 	background: #f1f4f3;
-	box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.4);
+	box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.3);
 
 	z-index: 1000;
 
@@ -40,6 +40,7 @@ export const BackgroundPanel = styled.div`
 
 	border-radius: 0px;
 	background: #f1f4f3;
+	box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.3);
 
 	flex-grow: 1;
 `;

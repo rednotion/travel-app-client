@@ -16,7 +16,10 @@ import { Title, AlignColumns, ColumnContainer, AlignItems, ColumnToolbar,
   WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer } from "../styles/DDList.js"
 import Toolbar from "../components/Toolbar.js";
 
-import { info, distances } from '../data/data_trips.js'
+
+import FlareIcon from '@material-ui/icons/Flare';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import EditIcon from '@material-ui/icons/Edit';
 
 //////////
 
@@ -30,8 +33,6 @@ function generateTime(startTime, endTime) {
   ))
   return labels
 }
-
-const minTime = Math.min(...info.colOrder.map(colId => info.columns[colId].startTime))
 
 function renderEmptyNotches(colId, startTime, minTime, isDraggingOver) {
   if (minTime < startTime) {
@@ -301,7 +302,7 @@ class App extends Component {
                 <Title>
                 <div>
                 <span class="left">{this.colInfo[colId].colName}</span>
-                <span class="right">{<Glyphicon glyph="pushpin"/>}</span>
+                <span class="right"><MoreVertIcon /></span>
                 </div>
                 </Title>
                   {renderEmptyNotches(colId, this.colInfo[colId].colStartTime, this.minTime, snapshot.isDraggingOver)}
@@ -324,7 +325,7 @@ class App extends Component {
   		                      {...provided.draggableProps}
   		                      {...provided.dragHandleProps}
   		                      isDragging={snapshot.isDragging}
-                            itemDuration={this.taskInfo[taskId].taskDuration}
+                            itemDuration={parseFloat(this.taskInfo[taskId].taskDuration)}
   		                    >
                           <ItemTitle>{generateItemTitle(this.taskInfo[taskId], snapshot.isDragging)}</ItemTitle>
                           <ItemBody>
@@ -336,7 +337,7 @@ class App extends Component {
   		                </Draggable>
                     )
                     :(
-                      <DriveContainer itemDuration={this.taskInfo[taskId].taskDuration}>
+                      <DriveContainer itemDuration={parseFloat(this.taskInfo[taskId].taskDuration)}>
                         {generateItemTitle(this.taskInfo[taskId])}
                       </DriveContainer>
                     )))}
@@ -362,7 +363,7 @@ class App extends Component {
                 ref={provided.innerRef}
                 isDraggingOver={snapshot.isDraggingOver}
               >
-                <Title>{this.colInfo[colId].colName}</Title>
+                <Title><FlareIcon /> {this.colInfo[colId].colName}</Title>
                   <AlignItems>
                   { /* Item */}
                   {this.colInfo[colId].taskIds.map((taskId, index) => (
