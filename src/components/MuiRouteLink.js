@@ -26,14 +26,14 @@ export function ListItemLink(props) {
   return (
     <li>
       <ListItem button component={renderLink}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
+        {icon ? <>{icon}&nbsp;</> : null}
+        {primary}
       </ListItem>
     </li>
   );
 }
 
-export function ButtonItemLink(props) {
+export function AppBarButtonLink(props) {
   const { icon, primary, to } = props;
 
   const renderLink = React.useMemo(
@@ -42,8 +42,8 @@ export function ButtonItemLink(props) {
   );
 
   return (
-      <Button component={renderLink}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+      <Button color="inherit" style={{fontSize: 12}} component={renderLink}>
+        {icon ? <>{icon}</> : null}
         {primary}
       </Button>
   );

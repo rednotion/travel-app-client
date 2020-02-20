@@ -8,6 +8,7 @@ import config from "../config";
 import { useFormFields } from "../libs/hooksLib";
 import LoaderButton from "../components/LoaderButton";
 import { AlignPanels, Panel, PanelTitle, LocationField, InvisibleColumnLeft, InvisibleColumnRight } from "../styles/Pages.js";
+import { ListItemLink } from "../components/MuiRouteLink.js"
 
 // import { Autocomplete, GoogleApiWrapper } from 'google-maps-react';
 import Autocomplete from 'react-google-autocomplete';
@@ -88,10 +89,7 @@ export default function MyTrips(props) {
   function tripLink(tripId, title) {
     const path = "trip/" + tripId
     return (
-      <ListItem button component="a" href={path}>
-      <ChevronRightRoundedIcon />
-      <ListItemText><span style={{fontSize: "15px"}}>{title}</span></ListItemText>
-      </ListItem>
+      <ListItemLink to={path} icon={<ChevronRightRoundedIcon fontSize="large" />} primary={title} />
     );
   }
 
@@ -337,18 +335,7 @@ export default function MyTrips(props) {
         />
 
         <p></p>
-
-        { /* formField("Additional Notes", "tripNotes", fields.tripNotes, "textarea") */}
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          bsStyle="primary"
-          isLoading={formIsLoading}
-          
-        >
-          Create
-        </LoaderButton>
+        {LoaderButton(formIsLoading, false, "Create")}
       </form>
     </Panel>
     </AlignPanels>

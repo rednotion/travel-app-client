@@ -50,6 +50,7 @@ export default function Places(props) {
         function loadTrip() { return API.get("travel", `/trips/${props.match.params.tripId}`); }
         function loadAllTasks() { return API.get("travel", `/tasks/${props.match.params.tripId}`); }
 
+        console.log("did use effect")
         async function onLoad() {
             try {
                 if ((props.tripInfo === null) | (props.tripInfo.tripId !== props.match.params.tripId)) {

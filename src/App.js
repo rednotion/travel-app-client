@@ -11,6 +11,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
 import { BelowAppBar, Logo } from "./styles/Pages.js"
+import { AppBarButtonLink } from "./components/MuiRouteLink.js";
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -145,12 +146,12 @@ function App(props) {
         </Typography>
          {isAuthenticated 
           ? <>
-            <Button color="inherit" className={classes.buttonText} href="/trips"><AirplanemodeActiveIcon/>&nbsp;&nbsp;My Trips</Button>
+            <AppBarButtonLink to="/trips" primary="&nbsp;&nbsp;My Trips" icon={<AirplanemodeActiveIcon/>}/>
             <Button color="inherit" className={classes.buttonText} onClick={handleLogout}>Logout</Button>
             </>
           : <>
-            <Button color="inherit" className={classes.buttonText} href="/signup">Signup</Button>
-            <Button color="inherit" className={classes.buttonText} href="/login">Login</Button>
+            <AppBarButtonLink to="/signup" primary="Signup"/>
+            <AppBarButtonLink to="/login" primary="Login"/>
             </>
          }
       </Toolbar>
