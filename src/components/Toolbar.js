@@ -12,7 +12,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import ViewDayIcon from '@material-ui/icons/ViewDay';
 import { deepPurple } from '@material-ui/core/colors';
 
-import { ButtonItemLink } from './MuiRouteLink.js';
+import { ToolbarButtonLink } from './MuiRouteLink.js';
 
 const buttonStyle = {fontSize: 12, marginRight: 10}
 const ColorButton = withStyles(theme => ({
@@ -31,31 +31,42 @@ const ColorButton = withStyles(theme => ({
 export default function Toolbar(tripId) {
 	return(
 	<ToolbarHeader>
-		<Button variant="contained" style={buttonStyle}
-		color="primary" href={"/trip/" + tripId}>
-	        <HomeIcon />&nbsp;&nbsp; Trip Home
-	    </Button>
-
-	    <Button variant="contained" style={buttonStyle}
-	    color="primary" href={"/days/" + tripId}>
-	        <TodayIcon />&nbsp;&nbsp; Days
-	    </Button>
-
-	    <ButtonItemLink to={"/places/" + tripId} primary="Places" />
-
-	    <Button variant="contained" style={buttonStyle}
-	    color="primary" href={"/places/" + tripId}>
-	        <ExploreIcon />&nbsp;&nbsp; Places
-	    </Button>
-
-	    <ColorButton variant="contained" 
-	    color="primary"
-	    href={"/plan/" + tripId}>
-	        <ViewDayIcon />&nbsp;&nbsp; Planner
-	    </ColorButton>
-    </ToolbarHeader>
-	)
+		<ToolbarButtonLink to={"/trip/" + tripId} primary="Trip Home" icon={<HomeIcon />}/>
+		<ToolbarButtonLink to={"/days/" + tripId} primary="Days" icon={<TodayIcon />}/>
+		<ToolbarButtonLink to={"/places/" + tripId} primary="Places" icon={<ExploreIcon />}/>
+		<ToolbarButtonLink to={"/plan/" + tripId} primary="Planner" icon={<ViewDayIcon />}/>
+	</ToolbarHeader>
+	);
 }
+
+// export function oldMUToolbar(tripId) {
+// 	return(
+// 	<ToolbarHeader>
+// 		<Button variant="contained" style={buttonStyle}
+// 		color="primary" href={"/trip/" + tripId}>
+// 	        <HomeIcon />&nbsp;&nbsp; Trip Home
+// 	    </Button>
+
+// 	    <Button variant="contained" style={buttonStyle}
+// 	    color="primary" href={"/days/" + tripId}>
+// 	        <TodayIcon />&nbsp;&nbsp; Days
+// 	    </Button>
+
+	    
+
+// 	    <Button variant="contained" style={buttonStyle}
+// 	    color="primary" href={"/places/" + tripId}>
+// 	        <ExploreIcon />&nbsp;&nbsp; Places
+// 	    </Button>
+
+// 	    <ColorButton variant="contained" 
+// 	    color="primary"
+// 	    href={"/plan/" + tripId}>
+// 	        <ViewDayIcon />&nbsp;&nbsp; Planner
+// 	    </ColorButton>
+//     </ToolbarHeader>
+// 	)
+// }
 
 export function oldToolbar(tripId) {
 	return (

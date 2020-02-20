@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Paper from '@material-ui/core/Paper';
@@ -13,6 +12,8 @@ import Typography from '@material-ui/core/Typography';
 import { Route, MemoryRouter } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import { deepPurple } from '@material-ui/core/colors';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 
 export function ListItemLink(props) {
   const { icon, primary, to } = props;
@@ -43,6 +44,37 @@ export function ButtonItemLink(props) {
   return (
       <Button component={renderLink}>
         {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+        {primary}
+      </Button>
+  );
+}
+
+export function ToolbarButtonLink(props) {
+  const { icon, primary, to } = props;
+  const buttonStyle = {fontSize: 12, marginRight: 10}
+  const ColorButton = withStyles(theme => ({
+    root: {
+      fontSize: 12,
+      marginRight: 10,
+      color: theme.palette.getContrastText(deepPurple[700]),
+      backgroundColor: deepPurple[700],
+      '&:hover': {
+        backgroundColor: deepPurple[800],
+        color: deepPurple[600]
+      },
+    },
+  }))(Button);
+
+
+  const renderLink = React.useMemo(
+    () => React.forwardRef((itemProps, ref) => <RouterLink to={to} ref={ref} {...itemProps} />),
+    [to],
+  );
+
+  return (
+      <Button variant="contained" color="primary" style={buttonStyle} 
+        component={renderLink}>
+        {icon ? <>{icon}&nbsp;&nbsp;</> : null}
         {primary}
       </Button>
   );
