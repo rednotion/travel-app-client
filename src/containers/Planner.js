@@ -24,8 +24,7 @@ import EditIcon from '@material-ui/icons/Edit';
 //////////
 
 export default function Planner(props) {
-  console.log(process.env.GOOGLE_API_KEY)
-  //const distanceInfo = getGoogleDistances(props)
+  const distanceInfo = getGoogleDistances(props)
 
   const newApp = new App
   console.log(props.currentTripId)
