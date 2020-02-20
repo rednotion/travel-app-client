@@ -22,7 +22,7 @@ export default function Routes({ appProps }) {
     <Switch>
       { /* Use exact otherwise it'll match any route starting w '/' 
        Note that we are using AppliedRoute rather than the standard Route */ }
-      <AppliedRoute path="/" exact component={Home} appProps={appProps} />
+      <AppliedRoute path="/" exact component={MyTrips} appProps={appProps} />
       { /* If you are logged in, these routes should go back to home */}
       <UnauthenticatedRoute path="/login" exact component={Login} appProps={appProps} />
       <UnauthenticatedRoute path="/signup" exact component={Signup} appProps={appProps} />

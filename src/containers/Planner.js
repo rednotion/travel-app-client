@@ -31,13 +31,13 @@ import { lightBlue } from '@material-ui/core/colors';
 
 export default function Planner(props) {
   const newApp = new App
-  newApp.tripId = props.currentTripId
+  newApp.tripId = props.trackerTripId
   newApp.tripInfo = props.tripInfo
   newApp.colInfo = props.colInfo
   newApp.taskInfo = props.taskInfo
   newApp.googleApiUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}`
 
-  return(newApp)
+  return((newApp))
 }
 
 
@@ -310,36 +310,34 @@ class App extends Component {
       key => key.startsWith('place')).map(
       key => Object({["placeId"]: this.taskInfo[key].taskGooglePlaceId}))
     console.log(places)
-    const service = new window.google.maps.DistanceMatrixService
+    if (places.length > 0) {
+      const service = new window.google.maps.DistanceMatrixService
 
-    service.getDistanceMatrix({
-      origins: places,
-      destinations: places,
-      travelMode: 'DRIVING',
-      unitSystem: window.google.maps.UnitSystem.METRIC,
-    }, function(response, status) {
-          if (status !== 'OK') {
-            alert('Error was: ' + status);
-      } else {
-        console.log(response)
-        var reformatDistanceInfo = {}
-        for (var x=0; x < places.length; x++) {
-          var innerDictionary = {}
-          for (var y=0; y < places.length; y++) {
-            innerDictionary[places[y].placeId] = response.rows[x].elements[y]
+      service.getDistanceMatrix({
+        origins: places,
+        destinations: places,
+        travelMode: 'DRIVING',
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+      }, function(response, status) {
+            if (status !== 'OK') {
+              alert('Error was: ' + status);
+        } else {
+          console.log(response)
+          var reformatDistanceInfo = {}
+          for (var x=0; x < places.length; x++) {
+            var innerDictionary = {}
+            for (var y=0; y < places.length; y++) {
+              innerDictionary[places[y].placeId] = response.rows[x].elements[y]
+            }
+            reformatDistanceInfo[places[x].placeId] = innerDictionary;
           }
-          reformatDistanceInfo[places[x].placeId] = innerDictionary;
+          self.setState({distanceInfo: reformatDistanceInfo})
+          console.log(reformatDistanceInfo)
         }
-        self.setState({distanceInfo: reformatDistanceInfo})
-        console.log(reformatDistanceInfo)
-      }
-    })
+      })
+    }
   }
 
-  
-//console.log("in here")
-          //const places = Object.keys(this.taskInfo).filter(key => key.startsWith('place')).map(key => this.taskInfo[key].taskGooglePlaceId);
-    
   // Normally you would want to split things out into separate components.
   // But in this example everything is just done in one place for simplicity
   render() {

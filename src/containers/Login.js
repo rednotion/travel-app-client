@@ -7,6 +7,8 @@ import { BackgroundPanel } from "../styles/Pages.js";
 import { FieldTitle } from "../styles/Forms.js"
 import "./Login.css";
 
+import TextField from '@material-ui/core/TextField';
+
 export default function Login(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [fields, handleFieldChange] = useFormFields({
@@ -36,32 +38,30 @@ export default function Login(props) {
     <BackgroundPanel>
     <div className="Login">
       <form onSubmit={handleSubmit}>
-        <FormGroup controlId="email" bsSize="large">
-          <FieldTitle>Email</FieldTitle>
-          <FormControl
-            autoFocus
-            type="email"
+        <TextField
+            id="email"
+            InputProps={{style: {fontSize: 16} }}
+            fullWidth
+            label="Email"
+            margin="dense"
+            variant="filled" 
+            onChange={handleFieldChange}
             value={fields.email}
-            onChange={handleFieldChange}
           />
-        </FormGroup>
-        <FormGroup controlId="password" bsSize="large">
-          <FieldTitle>Password</FieldTitle>
-          <FormControl
+          <br></br>
+          <TextField
+            id="password"
+            InputProps={{style: {fontSize: 16} }}
+            fullWidth
+            label="Password"
             type="password"
-            value={fields.password}
+            margin="dense"
+            variant="filled" 
             onChange={handleFieldChange}
+            value={fields.password}
           />
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          isLoading={isLoading}
-          disabled={!validateForm()}
-        >
-          Login
-        </LoaderButton>
+          <p></p>
+        {LoaderButton(isLoading, !validateForm(), "Login")}
       </form>
     </div>
     </BackgroundPanel>

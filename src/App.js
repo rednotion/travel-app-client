@@ -32,7 +32,7 @@ function App(props) {
   const [isAuthenticated, userHasAuthenticated] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentTripId, setCurrentTripId] = useState(null);
+  const [trackerTripId, setTrackerTripId] = useState(null);
   const [allTripInfo, setAllTripInfo] = useState(null);
   const [tripInfo, setTripInfo] = useState(null);
   const [colInfo, setColInfo] = useState(null);
@@ -61,10 +61,10 @@ function App(props) {
 
     if (tripId) {
       var response
-      if ((tripId !== currentTripId) | (tripInfo === null) | 
+      if ((tripId !== trackerTripId) | (tripInfo === null) | 
         (colInfo === null) | (taskInfo === null)) {
         try {
-          setCurrentTripId(tripId);
+          setTrackerTripId(tripId);
           response = await loadTrip(tripId)
           setTripInfo(response)
           console.log("trip response")
@@ -157,8 +157,9 @@ function App(props) {
       </Toolbar>
     </AppBar>
     <BelowAppBar>
-    <Routes appProps={{ isAuthenticated, userHasAuthenticated, currentTripId, setCurrentTripId, tripInfo, setTripInfo, 
-        taskInfo, setTaskInfo, colInfo, setColInfo, allTripInfo, setAllTripInfo }} />
+    <Routes appProps={{ isAuthenticated, userHasAuthenticated, 
+      trackerTripId, setTrackerTripId, tripInfo, setTripInfo, 
+      taskInfo, setTaskInfo, colInfo, setColInfo, allTripInfo, setAllTripInfo }} />
     </BelowAppBar>
     </div>
   );

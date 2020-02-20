@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import {
-  HelpBlock,
-  FormGroup,
-  FormControl,
-  ControlLabel
-} from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { useFormFields } from "../libs/hooksLib";
 import "./Signup.css";
 import { Auth } from "aws-amplify";
+import { BackgroundPanel } from "../styles/Pages.js";
+import TextField from '@material-ui/core/TextField';
 
 export default function Signup(props) {
   const [fields, handleFieldChange] = useFormFields({
@@ -79,25 +75,19 @@ export default function Signup(props) {
   function renderConfirmationForm() {
     return (
       <form onSubmit={handleConfirmationSubmit}>
-        <FormGroup controlId="confirmationCode" bsSize="large">
-          <ControlLabel>Confirmation Code</ControlLabel>
-          <FormControl
-            autoFocus
-            type="tel"
+      Please check your email for the code.
+        <TextField
+            id="confirmationCode"
+            InputProps={{style: {fontSize: 16} }}
+            fullWidth
+            label="Confirmation Code"
+            margin="dense"
+            variant="filled" 
             onChange={handleFieldChange}
             value={fields.confirmationCode}
           />
-          <HelpBlock>Please check your email for the code.</HelpBlock>
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          isLoading={isLoading}
-          disabled={!validateConfirmationForm()}
-        >
-          Verify
-        </LoaderButton>
+        <p></p>
+        {LoaderButton(isLoading, !validateConfirmationForm(), "Verify")}
       </form>
     );
   }
@@ -105,47 +95,51 @@ export default function Signup(props) {
   function renderForm() {
     return (
       <form onSubmit={handleSubmit}>
-        <FormGroup controlId="email" bsSize="large">
-          <ControlLabel>Email</ControlLabel>
-          <FormControl
-            autoFocus
-            type="email"
+        <TextField
+            id="email"
+            InputProps={{style: {fontSize: 16} }}
+            fullWidth
+            label="Email"
+            margin="dense"
+            variant="filled" 
+            onChange={handleFieldChange}
             value={fields.email}
-            onChange={handleFieldChange}
           />
-        </FormGroup>
-        <FormGroup controlId="password" bsSize="large">
-          <ControlLabel>Password</ControlLabel>
-          <FormControl
+          <br></br>
+          <TextField
+            id="password"
+            InputProps={{style: {fontSize: 16} }}
+            fullWidth
+            label="Password"
+            margin="dense"
+            variant="filled" 
             type="password"
+            onChange={handleFieldChange}
             value={fields.password}
-            onChange={handleFieldChange}
           />
-        </FormGroup>
-        <FormGroup controlId="confirmPassword" bsSize="large">
-          <ControlLabel>Confirm Password</ControlLabel>
-          <FormControl
+          <br></br>
+          <TextField
+            id="confirmPassword"
+            InputProps={{style: {fontSize: 16} }}
+            fullWidth
+            label="Confirm Password"
+            margin="dense"
             type="password"
+            variant="filled" 
             onChange={handleFieldChange}
             value={fields.confirmPassword}
           />
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          isLoading={isLoading}
-          disabled={!validateForm()}
-        >
-          Signup
-        </LoaderButton>
+          <p></p>
+        {LoaderButton(isLoading, !validateForm(), "Signup")}
       </form>
     );
   }
 
   return (
+    <BackgroundPanel>
     <div className="Signup">
       {newUser === null ? renderForm() : renderConfirmationForm()}
     </div>
+    </BackgroundPanel>
   );
 }

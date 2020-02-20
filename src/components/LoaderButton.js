@@ -1,5 +1,4 @@
 import React from "react";
-import "./LoaderButton.css";
 
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -41,8 +40,7 @@ export default function LoaderButton(isLoading, disabled = false, text = "") {
     (!disabled)
     ? 
       <FormSubmitButton fullWidth type="submit">
-        {isLoading && <CircularProgress color="" InputLabelProps={{style: {height: 20}}} />}
-        &nbsp;&nbsp;
+        {isLoading && <><CircularProgress color="" size="2rem" />&nbsp;&nbsp;</>}
         {text}
       </FormSubmitButton>
     : 

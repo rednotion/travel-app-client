@@ -11,10 +11,13 @@ import { AlignPanels, BackgroundPanel, PanelTitle, PanelSubtitle, InvisiblePanel
 import Toolbar from "../components/Toolbar.js";
 import { FormColumn, FormRow } from "../styles/Forms.js"
 
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import { changeDate } from "../components/DateHelper.js"
 
 export default function Trip(props) {
 	const [tripInfo, setTripInfo] = useState({});
+	const [pageIsLoading, setPageIsLoading] = useState(true);
 	const tripId = props.match.params.tripId;
 	const [toEdit, setToEdit] = useState(false);
 	const [formIsLoading, setFormIsLoading] = useState(false);
@@ -29,47 +32,48 @@ export default function Trip(props) {
 	const [formTripColIds, setFormTripColIds] = useState([])
 	const [formTripWishlistIds, setFormWishlistIds] = useState([])
 
-	// useEffect(() => {
-	// 	function loadTrip() { return API.get("travel", `/trips/${tripId}`);}
-	//   	async function onLoad() {
- //  			try {
- //  				if (props.tripInfo === null) {
-	//   				const response = await loadTrip();
-	//   				props.setTripInfo(response)
-	//   				props.setCurrentTripId(response.tripId)
-	//   			}
-	//   			setTripInfo(props.tripInfo)
-	//   			setFormTripName(props.tripInfo.tripName)
-	//   			setFormTripLocation(props.tripInfo.tripLocation)
-	//   			setFormTripStartDate(props.tripInfo.tripStartDate)
-	//   			setFormTripStartTime(props.tripInfo.tripStartTime)
-	//   			setFormTripEndDate(props.tripInfo.tripEndDate)
-	//   			setFormTripEndTime(props.tripInfo.tripEndTime)
-	//   			setFormTripNotes(props.tripInfo.tripNotes)
-	//   			setFormTripColIds(props.tripInfo.colIds)
-	//   			setFormWishlistIds(props.tripInfo.wishlistIds)
-	//   		} catch (e) {
-	//   			alert(e);
-	//   		}	  		
-	//   	}
-	//     onLoad();
-	//   }, []
-	// );
+	useEffect(() => {
+		function loadTrip() { return API.get("travel", `/trips/${tripId}`);}
+	  	async function onLoad() {
+  			try {
+  				if ((props.tripInfo === null) | (props.trackerTripId !== props.match.params.id)) {
+	  				const response = await loadTrip();
+	  				props.setTripInfo(response)
+	  				props.setTrackerTripId(response.tripId)
+	  			}
+	  			setTripInfo(props.tripInfo)
+	  			// setFormTripName(props.tripInfo.tripName)
+	  			// setFormTripLocation(props.tripInfo.tripLocation)
+	  			// setFormTripStartDate(props.tripInfo.tripStartDate)
+	  			// setFormTripStartTime(props.tripInfo.tripStartTime)
+	  			// setFormTripEndDate(props.tripInfo.tripEndDate)
+	  			// setFormTripEndTime(props.tripInfo.tripEndTime)
+	  			// setFormTripNotes(props.tripInfo.tripNotes)
+	  			// setFormTripColIds(props.tripInfo.colIds)
+	  			// setFormWishlistIds(props.tripInfo.wishlistIds)
+	  		} catch (e) {
+	  			alert(e);
+	  		};
+	  		setPageIsLoading(false);
+	  	}
+	    onLoad();
+	  }, []
+	);
 
-	function loadTrip() { return API.get("travel", `/trips/${tripId}`);}
+	// function loadTrip() { return API.get("travel", `/trips/${tripId}`);}
 
-	async function checkInfo() {
-		console.log("in check info")
-		console.log(props.tripInfo)
-		if (props.tripInfo === null) {
-			console.log('is null')
-			try {
-				var response = await loadTrip()
-				props.setTripInfo(response)
-				props.setCurrentTripId(response.tripId)
-			} catch (e) { alert(e); }
-		};
-	}
+	// async function checkInfo() {
+	// 	console.log("in check info")
+	// 	console.log(props.tripInfo)
+	// 	if (props.tripInfo === null) {
+	// 		console.log('is null')
+	// 		try {
+	// 			var response = await loadTrip()
+	// 			props.setTripInfo(response)
+	// 			props.setCurrentTripId(response.tripId)
+	// 		} catch (e) { alert(e); }
+	// 	};
+	// }
 
 	function formField(title, id, field, type, valueChangeFunction) {
 	    return(
@@ -120,63 +124,63 @@ export default function Trip(props) {
 		}
 	}
 
-	checkInfo();
-
 	return (
 		<div>
 		{ Toolbar(tripId) }
 		<BackgroundPanel>
-		<AlignPanels>
+		{pageIsLoading && <center><CircularProgress/></center>}
+		{(!pageIsLoading)
+		&& (
+			<>
+			<AlignPanels>
+			<InvisiblePanelFixed pullLeft>
+				<PanelTitle>{props.tripInfo.tripName}</PanelTitle>
+						{<Glyphicon glyph="map-marker"/>} {props.tripInfo.tripLocation}<br></br>
+						<b>Trip Begin</b>: {props.tripInfo.tripStartDate}<br></br>
+						<b>Trip End</b>: {props.tripInfo.tripEndDate}<br></br>
 
-		<InvisiblePanelFixed pullLeft>
-			<PanelTitle>{props.tripInfo.tripName}</PanelTitle>
-					{<Glyphicon glyph="map-marker"/>} {props.tripInfo.tripLocation}<br></br>
-					<b>Trip Begin</b>: {props.tripInfo.tripStartDate}<br></br>
-					<b>Trip End</b>: {props.tripInfo.tripEndDate}<br></br>
-
-			<PanelSubtitle>Tools</PanelSubtitle>
-			<ButtonToolbar>
-				<Button variant="primary" block href={"/plan/"+tripId}>Plan my trip</Button>
-				<Button variant="light" block onClick={() => setToEdit(true)}>Edit Trip Details</Button>
-			</ButtonToolbar>
-		</InvisiblePanelFixed>
-
-		{(toEdit)
-			? (
-				<InvisiblePanel>
-					<PanelTitle>Edit: bla {tripInfo.tripName}</PanelTitle>
-					<form onSubmit={handleTripChange}>
-						{formField("Name*", "tripName", formTripName, "content", setFormTripName)}
-				        {formField("Location", "tripLocation", formTripLocation, "content", setFormTripLocation)}
-				        <FormRow>
-					        <FormColumn>
-					        {formField("Arrival Time*", "tripStartTime", formTripStartTime, "time", setFormTripStartTime)}
-					        </FormColumn>
-				        	<FormColumn>
-				        	{formField("Departure Time*", "tripEndTime", formTripEndTime, "time", setFormTripEndTime)}
-				        	</FormColumn>
-				        </FormRow>
-				        {formField("Notes*", "tripNOtes", formTripNotes, "textarea", setFormTripNotes)}
-						<LoaderButton
-				          block
-				          type="submit"
-				          bsSize="large"
-				          bsStyle="primary"
-				          isLoading={formIsLoading}
-				          disabled={!validateForm()}
-				        >
-				          Save
-				        </LoaderButton>
-					</form>
-				</InvisiblePanel>
-			) : (
-				<InvisiblePanel>
-					Blank
-				</InvisiblePanel>
-			)
-		}
-
-		</AlignPanels>
+				<PanelSubtitle>Tools</PanelSubtitle>
+				<ButtonToolbar>
+					<Button variant="primary" block href={"/plan/"+tripId}>Plan my trip</Button>
+					<Button variant="light" block onClick={() => setToEdit(true)}>Edit Trip Details</Button>
+				</ButtonToolbar>
+			</InvisiblePanelFixed>
+			{(toEdit)
+				? (
+					<InvisiblePanel>
+						<PanelTitle>Edit: bla {props.tripInfo.tripName}</PanelTitle>
+						<form onSubmit={handleTripChange}>
+							{formField("Name*", "tripName", formTripName, "content", setFormTripName)}
+					        {formField("Location", "tripLocation", formTripLocation, "content", setFormTripLocation)}
+					        <FormRow>
+						        <FormColumn>
+						        {formField("Arrival Time*", "tripStartTime", formTripStartTime, "time", setFormTripStartTime)}
+						        </FormColumn>
+					        	<FormColumn>
+					        	{formField("Departure Time*", "tripEndTime", formTripEndTime, "time", setFormTripEndTime)}
+					        	</FormColumn>
+					        </FormRow>
+					        {formField("Notes*", "tripNOtes", formTripNotes, "textarea", setFormTripNotes)}
+							<LoaderButton
+					          block
+					          type="submit"
+					          bsSize="large"
+					          bsStyle="primary"
+					          isLoading={formIsLoading}
+					          disabled={!validateForm()}
+					        >
+					          Save
+					        </LoaderButton>
+						</form>
+					</InvisiblePanel>
+				) : (
+					<InvisiblePanel>
+						Blank
+					</InvisiblePanel>
+				)}
+			</AlignPanels>
+			</>
+		)}
 		</BackgroundPanel>
 		</div>
 	)

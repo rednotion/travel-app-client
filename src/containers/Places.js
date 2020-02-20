@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FormGroup, FormControl, ControlLabel, Glyphicon, Button, ButtonToolbar,
+import { FormGroup, FormControl, ControlLabel, Glyphicon, ButtonToolbar,
 	ListGroup, ListGroupItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
@@ -12,6 +12,7 @@ import LoaderButton from "../components/LoaderButton";
 import { AlignPanels, BackgroundPanel, PanelTitle, PanelSubtitle, InvisiblePanel, 
 	InvisiblePanelFixed } from "../styles/Pages.js";
 import Toolbar from "../components/Toolbar.js";
+import { LacquerH3 } from "../styles/Text.js";
 
 import "../styles/HoverStyles.css"
 
@@ -24,6 +25,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FilledInput from '@material-ui/core/FilledInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import { PurpleButton, GreenButton } from '../styles/Buttons.js';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import EditIcon from '@material-ui/icons/Edit';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 import Script from 'react-load-script';
@@ -49,17 +55,27 @@ export default function Places(props) {
 	useEffect(() => {
         function loadTrip() { return API.get("travel", `/trips/${props.match.params.tripId}`); }
         function loadAllTasks() { return API.get("travel", `/tasks/${props.match.params.tripId}`); }
+        function determineInconsistent(infovar){
+            if (infovar === null) { 
+                return true; 
+            } else if (Object.keys(infovar).length === 0) {
+                return true;
+            } else {
+                return infovar[Object.keys(infovar)[0]].tripId !== props.match.params.tripId;
+            }
+        }
 
-        console.log("did use effect")
         async function onLoad() {
+            const overallFail = (props.trackerTripId !== props.match.params.tripId)
             try {
-                if ((props.tripInfo === null) | (props.tripInfo.tripId !== props.match.params.tripId)) {
+                if (overallFail) {
                   var response = await loadTrip()
                   props.setTripInfo(response)
+                  props.setTrackerTripId(response.tripId)
                 };
                 setWishlistId(props.tripInfo.wishlistIds[0]);
 
-                if (props.taskInfo === null) {
+                if (overallFail | determineInconsistent(props.taskInfo)) {
                   response = await loadAllTasks()
                   var responseReformat = {}
                   for (var i=0; i < response.length; i++) {
@@ -102,8 +118,10 @@ export default function Places(props) {
     function loadDetails() {
     	return (
     		<div>
-    		<h2>{allTasksInfo[whatInfo].taskName}</h2>
-    		<Button onClick={() => setLetEdit(true)}>{<Glyphicon glyph="edit"/>} Edit</Button>
+    		<LacquerH3>{allTasksInfo[whatInfo].taskName}</LacquerH3>
+    		<PurpleButton variant="contained" onClick={() => setLetEdit(true)}>
+          <EditIcon />&nbsp;&nbsp; Edit
+        </PurpleButton>
     		<p></p>
     		More info
     		</div>
@@ -309,7 +327,7 @@ export default function Places(props) {
     function placeLink(placeId, title) {
     	// <ListGroupItem key={placeId} onClick={() => loadDetails(placeId)}>
 	    return(
-	        <ListGroupItem key={placeId} onClick={() => handleLinkClick(placeId)}>
+	        <ListGroupItem key={placeId} onClick={() => handleLinkClick(placeId)} style={{fontFamily:"Roboto"}}>
 	            <b><Glyphicon glyph="pushpin"/></b>&nbsp;&nbsp;{title}
 	        </ListGroupItem>
 	    );
@@ -323,9 +341,9 @@ export default function Places(props) {
             	<div>
             	<span class="left"><PanelTitle>Your places</PanelTitle></span>
             	<span class="right">
-            		<Button onClick={() => setWhatInfo("__add__")}>
-            		<Glyphicon glyph="plus"/> Add
-            		</Button>
+            		<GreenButton variant="contained" onClick={() => setWhatInfo("__add__")}>
+            		<AddToPhotosIcon />&nbsp;&nbsp;  Add
+            		</GreenButton>
             	</span>
             	</div>
 	            {placeLinks}
@@ -345,7 +363,7 @@ export default function Places(props) {
 		<AlignPanels>
 
 		<InvisiblePanel>
-        {loadFrame()}
+    {loadFrame()}
 		</InvisiblePanel>
 
 		<InvisiblePanel>
