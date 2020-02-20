@@ -33,7 +33,6 @@ function App(props) {
   const [tripInfo, setTripInfo] = useState(null);
   const [colInfo, setColInfo] = useState(null);
   const [taskInfo, setTaskInfo] = useState(null);
-  const [ACMODEL, setACMODEL] = useState(null);
 
   useEffect(() => {onLoad();}, []);
   { /* useEffect has 2 arguments: Function; Array of variables 
@@ -130,7 +129,6 @@ function App(props) {
 
   const classes = useStyles()
 
-
   return (
     (!isAuthenticating & !isLoading)&&
     <div className="App container">
@@ -156,7 +154,7 @@ function App(props) {
     </AppBar>
     <BelowAppBar>
     <Routes appProps={{ isAuthenticated, userHasAuthenticated, currentTripId, setCurrentTripId, tripInfo, setTripInfo, 
-        taskInfo, setTaskInfo, colInfo, setColInfo, ACMODEL, setACMODEL }} />
+        taskInfo, setTaskInfo, colInfo, setColInfo  }} />
     </BelowAppBar>
     </div>
   );

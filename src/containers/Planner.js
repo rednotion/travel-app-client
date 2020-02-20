@@ -23,6 +23,34 @@ import EditIcon from '@material-ui/icons/Edit';
 
 //////////
 
+export default function Planner(props) {
+  console.log(process.env.GOOGLE_API_KEY)
+  //const distanceInfo = getGoogleDistances(props)
+
+  const newApp = new App
+  console.log(props.currentTripId)
+  newApp.tripId = props.currentTripId
+  newApp.tripInfo = props.tripInfo
+  newApp.colInfo = props.colInfo
+  newApp.taskInfo = props.taskInfo
+
+  return(newApp)
+}
+
+async function getGoogleDistances(props) {
+    const allPlaces = Object.keys(props.taskInfo).filter(key => key.startsWith('place'))
+    const allGooglePlaceIds = allPlaces.map(key => "place_id:" + props.taskInfo[key].taskGooglePlaceId)
+    const inputString = allGooglePlaceIds.join("|")
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${inputString}&destinations=${inputString}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
+
+    try {
+      const response = await fetch(url)
+      const data = response.json()
+      console.log(data)
+    } catch(e) {
+      alert(e);
+    }
+}
 
 function generateTime(startTime, endTime) {
   const startHour = parseInt(startTime.slice(0,2)) + 1
@@ -45,8 +73,6 @@ function renderEmptyNotches(colId, startTime, minTime, isDraggingOver) {
     return( <div></div>)
   }
 }
-
-
 
 // function generateNearLocations(itemId, distances, info) {
 //   // returns ['locationName', distance]
@@ -396,13 +422,3 @@ class App extends Component {
   }
 }
 
-export default function Planner(props) {
-  const newApp = new App
-  console.log(props.currentTripId)
-  newApp.tripId = props.currentTripId
-  newApp.tripInfo = props.tripInfo
-  newApp.colInfo = props.colInfo
-  newApp.taskInfo = props.taskInfo
-
-	return(newApp)
-}

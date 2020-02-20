@@ -9,8 +9,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Amplify from 'aws-amplify';
 import config from './config';
 
-require('dotenv').config();
-
 // Configure AWS services first 
 Amplify.configure({
   // Auth is Cognito

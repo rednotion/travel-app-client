@@ -210,7 +210,7 @@ export default function MyTrips(props) {
     },
   }));
 
-  const url = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`
+  const url = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`
   
   return (
     <AlignPanels>
