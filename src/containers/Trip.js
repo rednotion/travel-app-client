@@ -29,32 +29,47 @@ export default function Trip(props) {
 	const [formTripColIds, setFormTripColIds] = useState([])
 	const [formTripWishlistIds, setFormWishlistIds] = useState([])
 
-	useEffect(() => {
-		function loadTrip() { return API.get("travel", `/trips/${tripId}`);}
-	  	async function onLoad() {
-  			try {
-  				if (props.tripInfo === null) {
-	  				const response = await loadTrip();
-	  				props.setTripInfo(response)
-	  				props.setCurrentTripId(response.tripId)
-	  			}
-	  			setTripInfo(props.tripInfo)
-	  			setFormTripName(props.tripInfo.tripName)
-	  			setFormTripLocation(props.tripInfo.tripLocation)
-	  			setFormTripStartDate(props.tripInfo.tripStartDate)
-	  			setFormTripStartTime(props.tripInfo.tripStartTime)
-	  			setFormTripEndDate(props.tripInfo.tripEndDate)
-	  			setFormTripEndTime(props.tripInfo.tripEndTime)
-	  			setFormTripNotes(props.tripInfo.tripNotes)
-	  			setFormTripColIds(props.tripInfo.colIds)
-	  			setFormWishlistIds(props.tripInfo.wishlistIds)
-	  		} catch (e) {
-	  			alert(e);
-	  		}	  		
-	  	}
-	    onLoad();
-	  }, []
-	);
+	// useEffect(() => {
+	// 	function loadTrip() { return API.get("travel", `/trips/${tripId}`);}
+	//   	async function onLoad() {
+ //  			try {
+ //  				if (props.tripInfo === null) {
+	//   				const response = await loadTrip();
+	//   				props.setTripInfo(response)
+	//   				props.setCurrentTripId(response.tripId)
+	//   			}
+	//   			setTripInfo(props.tripInfo)
+	//   			setFormTripName(props.tripInfo.tripName)
+	//   			setFormTripLocation(props.tripInfo.tripLocation)
+	//   			setFormTripStartDate(props.tripInfo.tripStartDate)
+	//   			setFormTripStartTime(props.tripInfo.tripStartTime)
+	//   			setFormTripEndDate(props.tripInfo.tripEndDate)
+	//   			setFormTripEndTime(props.tripInfo.tripEndTime)
+	//   			setFormTripNotes(props.tripInfo.tripNotes)
+	//   			setFormTripColIds(props.tripInfo.colIds)
+	//   			setFormWishlistIds(props.tripInfo.wishlistIds)
+	//   		} catch (e) {
+	//   			alert(e);
+	//   		}	  		
+	//   	}
+	//     onLoad();
+	//   }, []
+	// );
+
+	function loadTrip() { return API.get("travel", `/trips/${tripId}`);}
+
+	async function checkInfo() {
+		console.log("in check info")
+		console.log(props.tripInfo)
+		if (props.tripInfo === null) {
+			console.log('is null')
+			try {
+				var response = await loadTrip()
+				props.setTripInfo(response)
+				props.setCurrentTripId(response.tripId)
+			} catch (e) { alert(e); }
+		};
+	}
 
 	function formField(title, id, field, type, valueChangeFunction) {
 	    return(
@@ -105,6 +120,8 @@ export default function Trip(props) {
 		}
 	}
 
+	checkInfo();
+
 	return (
 		<div>
 		{ Toolbar(tripId) }
@@ -112,10 +129,10 @@ export default function Trip(props) {
 		<AlignPanels>
 
 		<InvisiblePanelFixed pullLeft>
-			<PanelTitle>{tripInfo.tripName}</PanelTitle>
-					{<Glyphicon glyph="map-marker"/>} {tripInfo.tripLocation}<br></br>
-					<b>Trip Begin</b>: {tripInfo.tripStartDate}<br></br>
-					<b>Trip End</b>: {tripInfo.tripEndDate}<br></br>
+			<PanelTitle>{props.tripInfo.tripName}</PanelTitle>
+					{<Glyphicon glyph="map-marker"/>} {props.tripInfo.tripLocation}<br></br>
+					<b>Trip Begin</b>: {props.tripInfo.tripStartDate}<br></br>
+					<b>Trip End</b>: {props.tripInfo.tripEndDate}<br></br>
 
 			<PanelSubtitle>Tools</PanelSubtitle>
 			<ButtonToolbar>

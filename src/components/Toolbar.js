@@ -12,6 +12,8 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import ViewDayIcon from '@material-ui/icons/ViewDay';
 import { deepPurple } from '@material-ui/core/colors';
 
+import { ButtonItemLink } from './MuiRouteLink.js';
+
 const buttonStyle = {fontSize: 12, marginRight: 10}
 const ColorButton = withStyles(theme => ({
   root: {
@@ -38,6 +40,8 @@ export default function Toolbar(tripId) {
 	    color="primary" href={"/days/" + tripId}>
 	        <TodayIcon />&nbsp;&nbsp; Days
 	    </Button>
+
+	    <ButtonItemLink to={"/places/" + tripId} primary="Places" />
 
 	    <Button variant="contained" style={buttonStyle}
 	    color="primary" href={"/places/" + tripId}>
