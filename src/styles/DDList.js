@@ -9,7 +9,7 @@ export const Title = styled.h3`
   background: #d3d4d1;
   margin-top: 0px;
   padding: 10px;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Roboto";
   font-weight: "bold";
 `;
 export const AlignColumns = styled.div`

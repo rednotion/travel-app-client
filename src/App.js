@@ -7,6 +7,17 @@ import { LinkContainer } from "react-router-bootstrap";
 // link containers is how we'll get router to work w bootstrap
 import { Auth, API } from "aws-amplify";
 import { useFormFields } from "./libs/hooksLib";
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+
+import { BelowAppBar } from "./styles/Pages.js"
+
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import { makeStyles } from '@material-ui/core/styles';
+import AirplanemodeActiveIcon from '@material-ui/icons/AirplanemodeActive';
 
 { /* The <> or Fragment component can be thought of as a placeholder component. 
 We need this because in the case the user is not logged in, we want to render two links. 
@@ -22,6 +33,7 @@ function App(props) {
   const [tripInfo, setTripInfo] = useState(null);
   const [colInfo, setColInfo] = useState(null);
   const [taskInfo, setTaskInfo] = useState(null);
+  const [ACMODEL, setACMODEL] = useState(null);
 
   useEffect(() => {onLoad();}, []);
   { /* useEffect has 2 arguments: Function; Array of variables 
@@ -100,39 +112,52 @@ function App(props) {
     props.history.push("/login");
   }
 
+  const useStyles = makeStyles(theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    title: {
+      flexGrow: 1,
+      fontSize: 15,
+    },
+    buttonText: {
+      fontSize: 12
+    }
+  }));
+
+  const classes = useStyles()
+
 
   return (
     (!isAuthenticating & !isLoading)&&
     <div className="App container">
-      <Navbar fluid collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to="/">TakeMeTo</Link> 
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav pullRight>
-            {isAuthenticated
-              ? <>
-                  <LinkContainer to="/trips">
-                    <NavItem>My Trips</NavItem>
-                  </LinkContainer>
-                  <NavItem onClick={handleLogout}>Logout</NavItem>
-                </>
-              : <>
-                  <LinkContainer to="/signup">
-                    <NavItem>Signup</NavItem>
-                  </LinkContainer>
-                  <LinkContainer to="/login">
-                    <NavItem>Login</NavItem>
-                  </LinkContainer>
-                </>
-            }
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-      <Routes appProps={{ isAuthenticated, userHasAuthenticated, currentTripId, setCurrentTripId, tripInfo, setTripInfo, taskInfo, setTaskInfo, colInfo, setColInfo }} />
+    <AppBar position="fixed">
+      <Toolbar>
+        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" className={classes.title}>
+          TakeMeTo
+        </Typography>
+         {isAuthenticated 
+          ? <>
+            <Button color="inherit" className={classes.buttonText} href="/trips"><AirplanemodeActiveIcon/>&nbsp;&nbsp;My Trips</Button>
+            <Button color="inherit" className={classes.buttonText} onClick={handleLogout}>Logout</Button>
+            </>
+          : <>
+            <Button color="inherit" className={classes.buttonText} href="/signup">Signup</Button>
+            <Button color="inherit" className={classes.buttonText} href="/login">Login</Button>
+            </>
+         }
+      </Toolbar>
+    </AppBar>
+    <BelowAppBar>
+    <Routes appProps={{ isAuthenticated, userHasAuthenticated, currentTripId, setCurrentTripId, tripInfo, setTripInfo, 
+        taskInfo, setTaskInfo, colInfo, setColInfo, ACMODEL, setACMODEL }} />
+    </BelowAppBar>
     </div>
   );
 }

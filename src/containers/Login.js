@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Auth } from "aws-amplify";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { useFormFields } from "../libs/hooksLib";
+import { BackgroundPanel } from "../styles/Pages.js";
+import { FieldTitle } from "../styles/Forms.js"
 import "./Login.css";
 
 export default function Login(props) {
@@ -31,10 +33,11 @@ export default function Login(props) {
   }
 
   return (
+    <BackgroundPanel>
     <div className="Login">
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email" bsSize="large">
-          <ControlLabel>Email</ControlLabel>
+          <FieldTitle>Email</FieldTitle>
           <FormControl
             autoFocus
             type="email"
@@ -43,7 +46,7 @@ export default function Login(props) {
           />
         </FormGroup>
         <FormGroup controlId="password" bsSize="large">
-          <ControlLabel>Password</ControlLabel>
+          <FieldTitle>Password</FieldTitle>
           <FormControl
             type="password"
             value={fields.password}
@@ -61,5 +64,6 @@ export default function Login(props) {
         </LoaderButton>
       </form>
     </div>
+    </BackgroundPanel>
   );
 }

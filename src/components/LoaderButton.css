@@ -1,3 +1,7 @@
+.LoaderButton {
+	font-family: Roboto;
+}
+
 .LoaderButton .spinning.glyphicon {
   margin-right: 7px;
   top: 2px;

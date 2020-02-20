@@ -228,7 +228,7 @@ function rebuildList(tripId, locationIds) {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = info
+    this.state = null // let state be loading
     this.onDragEnd = this.onDragEnd.bind(this);
     this.minTime = "08:00"
     this.tripId = ''
@@ -351,13 +351,16 @@ class App extends Component {
       <ColumnToolbar>
       <LoaderButton
           block
-          onClick={() => {handleUpdate(this.colInfo, this.taskInfo, this.isLoading)}}
+          onClick={() => {
+            handleUpdate(this.colInfo, this.taskInfo, this.isLoading);
+          }}
           bsSize="large"
           bsStyle="primary"
           isLoading={this.isLoading}
       >
         Update
       </LoaderButton>
+      <p></p>
       {this.tripInfo.wishlistIds.map((colId, index) => (
           <Droppable droppableId={colId} >
             {(provided, snapshot) => (

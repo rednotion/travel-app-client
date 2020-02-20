@@ -5,7 +5,7 @@ import { API } from "aws-amplify";
 import Popup from "reactjs-popup";
 
 import { AlignPanels, BackgroundPanel, PanelTitle, PanelSubtitle, InvisiblePanel, 
-    InvisiblePanelFixed } from "./MyTrips_css.js";
+    InvisiblePanelFixed } from "../styles/Pages.js";
 
 import { trips as data_trips } from "../data/data_trips.js"
 

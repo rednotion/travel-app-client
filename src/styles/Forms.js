@@ -17,3 +17,7 @@ export const FormColumn = styled.div`
 	width: 100px;
 	flex-grow: 1;
 `;
+
+export const FieldTitle = styled.h4`
+	font-family: "Roboto";
+`
