@@ -10,14 +10,16 @@ import { useFormFields } from "./libs/hooksLib";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import { BelowAppBar } from "./styles/Pages.js"
+import { BelowAppBar, Logo } from "./styles/Pages.js"
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import BlurOnIcon from '@material-ui/icons/BlurOn';
 import { makeStyles } from '@material-ui/core/styles';
 import AirplanemodeActiveIcon from '@material-ui/icons/AirplanemodeActive';
+import GestureIcon from '@material-ui/icons/Gesture';
 
 { /* The <> or Fragment component can be thought of as a placeholder component. 
 We need this because in the case the user is not logged in, we want to render two links. 
@@ -30,6 +32,7 @@ function App(props) {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTripId, setCurrentTripId] = useState(null);
+  const [allTripInfo, setAllTripInfo] = useState(null);
   const [tripInfo, setTripInfo] = useState(null);
   const [colInfo, setColInfo] = useState(null);
   const [taskInfo, setTaskInfo] = useState(null);
@@ -116,7 +119,7 @@ function App(props) {
       flexGrow: 1,
     },
     menuButton: {
-      marginRight: theme.spacing(2),
+      marginRight: theme.spacing(1),
     },
     title: {
       flexGrow: 1,
@@ -134,11 +137,11 @@ function App(props) {
     <div className="App container">
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-          <MenuIcon />
+        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" href="/">
+          <GestureIcon fontSize="large"/>
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-          TakeMeTo
+          <Logo>takemethere</Logo>
         </Typography>
          {isAuthenticated 
           ? <>
@@ -154,7 +157,7 @@ function App(props) {
     </AppBar>
     <BelowAppBar>
     <Routes appProps={{ isAuthenticated, userHasAuthenticated, currentTripId, setCurrentTripId, tripInfo, setTripInfo, 
-        taskInfo, setTaskInfo, colInfo, setColInfo  }} />
+        taskInfo, setTaskInfo, colInfo, setColInfo, allTripInfo, setAllTripInfo }} />
     </BelowAppBar>
     </div>
   );

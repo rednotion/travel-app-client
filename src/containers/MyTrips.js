@@ -26,11 +26,13 @@ import FilledInput from '@material-ui/core/FilledInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { makeStyles } from '@material-ui/core/styles';
 import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 
 export default function MyTrips(props) {
   // general
-  const [allTrips, setAllTrips] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
   // for the form
@@ -50,14 +52,16 @@ export default function MyTrips(props) {
   /* On load, find our trips */
   useEffect(() => {
       async function onLoad() {
+        if (props.allTripInfo === null) {
           try {
               const allTrips = await loadAllTrips();
               console.log(allTrips)
-              setAllTrips(allTrips);
+              props.setAllTripInfo(allTrips);
           } catch (e) {
               alert(e);
           }
-          setIsLoading(false)
+        };
+        setIsLoading(false)
       }
 
       onLoad();
@@ -91,10 +95,9 @@ export default function MyTrips(props) {
     );
   }
 
-  function renderTripLinks(allTrips) {
-    if (allTrips !== []) {
-      const tripLinks = [].concat(allTrips).map((key, index) => tripLink(key.tripId, key.tripName))
-      //const tripLinks = Object.keys(allTrips).map((key) => (tripLink(allTrips[key].tripId, allTrips[key].tripName)))
+  function renderTripLinks(allTripInfo) {
+    if (allTripInfo) {
+      const tripLinks = [].concat(allTripInfo).map((key, index) => tripLink(key.tripId, key.tripName))
       return(
         tripLinks
       );
@@ -210,26 +213,31 @@ export default function MyTrips(props) {
     },
   }));
 
-  const url = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`
+  const googleUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`
   
   return (
     <AlignPanels>
     <Script 
-        url={url}
+        url={googleUrl}
         onLoad={() => handleScriptLoad()}
     />
     <Panel>
       <PanelTitle>Your Trips</PanelTitle>
-      <List component="nav" aria-label="all user trips">
-      { renderTripLinks(allTrips) }
-      </List>
+      {!isLoading 
+        ? (
+          <List component="nav" aria-label="all user trips">
+          { renderTripLinks(props.allTripInfo) }
+          </List>
+        ) : (
+          <center><CircularProgress/></center>
+        )
+    }
+      
     </Panel>
 
     <Panel>
 
-      <PanelTitle><Glyphicon glyph="plus"/> Add New Trip</PanelTitle>
-
-
+      <PanelTitle><PlaylistAddIcon style={{fontSize: 25, margin: -4}}/> Add New Trip</PanelTitle>
       <form onSubmit={handleSubmit}>
         <TextField
           id="tripName"

@@ -39,7 +39,7 @@ export const ColumnContainer = styled.div`
   flex-direction: column;
 `;
 export const WishlistContainer = styled.div`
-  background: ${props => (props.isDraggingOver ? '#9fa8da' : '#e8eaf6')};
+  background: ${props => (props.isDraggingOver ? '#ffd54f' : '#fff9c4')};
 
   min-width: 200px;
   max-width: 300px;
@@ -77,7 +77,7 @@ export const ItemContainer = styled.div`
 export const ItemTitle = styled.div`
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
-  background: #90caf9;
+  background: #4db6ac;
   font-family: "Roboto";
   padding: 8px;
   min-height: 30px;
@@ -88,7 +88,7 @@ export const ItemBody = styled.div`
 `
 export const WishlistItemContainer = styled.div`
   border-radius: 5px;
-  background: ${props => (props.isDragging ? '#9fa8da' : '#9fa8da')};
+  background: ${props => (props.isDragging ? '#ffd740' : '#ffd740')};
   
   padding: 8px;
   min-height: 30px;

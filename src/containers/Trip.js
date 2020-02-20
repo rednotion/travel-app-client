@@ -33,17 +33,21 @@ export default function Trip(props) {
 		function loadTrip() { return API.get("travel", `/trips/${tripId}`);}
 	  	async function onLoad() {
   			try {
-	  			const response = await loadTrip();
-	  			setTripInfo(response)
-	  			setFormTripName(response.tripName)
-	  			setFormTripLocation(response.tripLocation)
-	  			setFormTripStartDate(response.tripStartDate)
-	  			setFormTripStartTime(response.tripStartTime)
-	  			setFormTripEndDate(response.tripEndDate)
-	  			setFormTripEndTime(response.tripEndTime)
-	  			setFormTripNotes(response.tripNotes)
-	  			setFormTripColIds(response.colIds)
-	  			setFormWishlistIds(response.wishlistIds)
+  				if (props.tripInfo === null) {
+	  				const response = await loadTrip();
+	  				props.setTripInfo(response)
+	  				props.setCurrentTripId(response.tripId)
+	  			}
+	  			setTripInfo(props.tripInfo)
+	  			setFormTripName(props.tripInfo.tripName)
+	  			setFormTripLocation(props.tripInfo.tripLocation)
+	  			setFormTripStartDate(props.tripInfo.tripStartDate)
+	  			setFormTripStartTime(props.tripInfo.tripStartTime)
+	  			setFormTripEndDate(props.tripInfo.tripEndDate)
+	  			setFormTripEndTime(props.tripInfo.tripEndTime)
+	  			setFormTripNotes(props.tripInfo.tripNotes)
+	  			setFormTripColIds(props.tripInfo.colIds)
+	  			setFormWishlistIds(props.tripInfo.wishlistIds)
 	  		} catch (e) {
 	  			alert(e);
 	  		}	  		
@@ -51,8 +55,6 @@ export default function Trip(props) {
 	    onLoad();
 	  }, []
 	);
-
-	
 
 	function formField(title, id, field, type, valueChangeFunction) {
 	    return(
@@ -109,6 +111,19 @@ export default function Trip(props) {
 		<BackgroundPanel>
 		<AlignPanels>
 
+		<InvisiblePanelFixed pullLeft>
+			<PanelTitle>{tripInfo.tripName}</PanelTitle>
+					{<Glyphicon glyph="map-marker"/>} {tripInfo.tripLocation}<br></br>
+					<b>Trip Begin</b>: {tripInfo.tripStartDate}<br></br>
+					<b>Trip End</b>: {tripInfo.tripEndDate}<br></br>
+
+			<PanelSubtitle>Tools</PanelSubtitle>
+			<ButtonToolbar>
+				<Button variant="primary" block href={"/plan/"+tripId}>Plan my trip</Button>
+				<Button variant="light" block onClick={() => setToEdit(true)}>Edit Trip Details</Button>
+			</ButtonToolbar>
+		</InvisiblePanelFixed>
+
 		{(toEdit)
 			? (
 				<InvisiblePanel>
@@ -143,20 +158,6 @@ export default function Trip(props) {
 				</InvisiblePanel>
 			)
 		}
-
-		<InvisiblePanelFixed pullright>
-			<PanelTitle>{tripInfo.tripName}</PanelTitle>
-					{<Glyphicon glyph="map-marker"/>} {tripInfo.tripLocation}<br></br>
-					<b>Trip Begin</b>: {tripInfo.tripStartDate}<br></br>
-					<b>Trip End</b>: {tripInfo.tripEndDate}<br></br>
-
-			<PanelSubtitle>Tools</PanelSubtitle>
-			<ButtonToolbar>
-				<Button variant="primary" block href={"/plan/"+tripId}>Plan my trip</Button>
-				<Button variant="light" block onClick={() => setToEdit(true)}>Edit Trip Details</Button>
-			</ButtonToolbar>
-		</InvisiblePanelFixed>
-
 
 		</AlignPanels>
 		</BackgroundPanel>

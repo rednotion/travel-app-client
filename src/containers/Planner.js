@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
-import { FormGroup, FormControl, ControlLabel, Glyphicon, Button } from "react-bootstrap";
+import { FormGroup, FormControl, ControlLabel, Glyphicon } from "react-bootstrap";
 import ReactDOM from "react-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -16,40 +16,43 @@ import { Title, AlignColumns, ColumnContainer, AlignItems, ColumnToolbar,
   WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer } from "../styles/DDList.js"
 import Toolbar from "../components/Toolbar.js";
 
+import Script from 'react-load-script';
 
 import FlareIcon from '@material-ui/icons/Flare';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
+import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import { lightBlue } from '@material-ui/core/colors';
 
 //////////
 
 export default function Planner(props) {
-  const distanceInfo = getGoogleDistances(props)
-
   const newApp = new App
-  console.log(props.currentTripId)
   newApp.tripId = props.currentTripId
   newApp.tripInfo = props.tripInfo
   newApp.colInfo = props.colInfo
   newApp.taskInfo = props.taskInfo
+  newApp.googleApiUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}`
 
   return(newApp)
 }
 
-async function getGoogleDistances(props) {
-    const allPlaces = Object.keys(props.taskInfo).filter(key => key.startsWith('place'))
-    const allGooglePlaceIds = allPlaces.map(key => "place_id:" + props.taskInfo[key].taskGooglePlaceId)
-    const inputString = allGooglePlaceIds.join("|")
-    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${inputString}&destinations=${inputString}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
 
-    try {
-      const response = await fetch(url)
-      const data = response.json()
-      console.log(data)
-    } catch(e) {
-      alert(e);
-    }
-}
+const ColorButton = withStyles(theme => ({
+  root: {
+    fontSize: 16,
+    color: theme.palette.getContrastText(lightBlue[500]),
+    backgroundColor: lightBlue[500],
+    '&:hover': {
+      backgroundColor: lightBlue[700],
+      color: lightBlue[600]
+    },
+  },
+}))(Button);
+
 
 function generateTime(startTime, endTime) {
   const startHour = parseInt(startTime.slice(0,2)) + 1
@@ -73,27 +76,6 @@ function renderEmptyNotches(colId, startTime, minTime, isDraggingOver) {
   }
 }
 
-// function generateNearLocations(itemId, distances, info) {
-//   // returns ['locationName', distance]
-//   const distanceDict = distances[itemId]
-//   var items = Object.keys(distanceDict).map(function(key) {
-//     return [key, distanceDict[key]];
-//   });
-//   // Sort the array based on the second element
-//   items.sort(function(first, second) {
-//     return first[1] - second[1];
-//   });
-//   items = items.filter(pair => pair[0] != itemId)
-
-//   const nearLocations = items.map(each => ([info.items[each[0]].description, each[1]]))
-
-//   return nearLocations.slice(0,3)
-// }
-
-function generateNearLocations(taskId) {
-  return [['PlaceA', 10], ['PlaceB', 20], ['PlaceC', 30]]
-}
-
 function launchToolTip(taskId) {
   const nearLocations = generateNearLocations(taskId)
   return (
@@ -107,23 +89,6 @@ function launchToolTip(taskId) {
     </Popup>
   )
 }
-
-function generateItemTitle(taskItem, isDragging) {
-  // const nearestPlaceName = info[nearestPlace].locationName
-  const shortenedTitle = taskItem.taskName.split(",")[0]
-  if (taskItem.taskType == 'location'){
-    return(
-      <div>
-      <span class="left"><b>{shortenedTitle}</b> <small><i>({taskItem.taskDuration}h)</i></small></span>
-      {(!isDragging) ? <span class="right">{launchPopUp()}</span> : ""}
-      </div>
-    ) } else {
-    return(
-      <center><small>{taskItem.taskName}</small></center>
-      )
-  }
-}
-
 function handleSubmit() {}
 function formField(title, id, field, type) {
     return(
@@ -138,13 +103,12 @@ function formField(title, id, field, type) {
         </FormGroup>
       );
   }
-
 function handleFieldChange() {}
 function launchPopUp() {
   const fields = {name: 'hello', location: 'x=10,y=10', duration:10}
   return(
     <Popup 
-      trigger={<div className="EditButton"><span class="glyphicon glyphicon-pencil"></span></div>} 
+      trigger={<IconButton size="small" style={{marginTop: -5}}><EditIcon fontSize="small"/></IconButton>} 
       modal
     >
       <AlignColumns>
@@ -170,8 +134,41 @@ function launchPopUp() {
   );
 }
 
-function getDistance(origin, destination) {
-  return 2
+// function generateNearLocations(itemId, distances, info) {
+//   // returns ['locationName', distance]
+//   const distanceDict = distances[itemId]
+//   var items = Object.keys(distanceDict).map(function(key) {
+//     return [key, distanceDict[key]];
+//   });
+//   // Sort the array based on the second element
+//   items.sort(function(first, second) {
+//     return first[1] - second[1];
+//   });
+//   items = items.filter(pair => pair[0] != itemId)
+
+//   const nearLocations = items.map(each => ([info.items[each[0]].description, each[1]]))
+
+//   return nearLocations.slice(0,3)
+// }
+
+function generateNearLocations(taskId) {
+  return [['PlaceA', 10], ['PlaceB', 20], ['PlaceC', 30]]
+}
+
+function generateItemTitle(taskItem, isDragging) {
+  // const nearestPlaceName = info[nearestPlace].locationName
+  const shortenedTitle = taskItem.taskName.split(",")[0]
+  if (taskItem.taskType == 'location'){
+    return(
+      <div>
+      <span class="left"><b>{shortenedTitle}</b> <small><i>({taskItem.taskDuration}h)</i></small></span>
+      {(!isDragging) ? <span class="right">{launchPopUp()}</span> : ""}
+      </div>
+    ) } else {
+    return(
+      <center><small>{taskItem.taskName}</small></center>
+      )
+  }
 }
 
 async function handleUpdate(colInfo, taskInfo, isLoading) {
@@ -217,29 +214,32 @@ async function handleUpdate(colInfo, taskInfo, isLoading) {
   isLoading = false;
 }
 
-function rebuildList(tripId, locationIds) {
-  var idx, driveId, runningIdx;
+function rebuildList(tripId, locationIds, taskInfo, distanceInfo) {
+  var idx, runningIdx;
   var newTaskIds = Array.from(locationIds)
   var newDriveItems = new Object()
-  var driveData
-  var response
+  var driveData, response
   const maxIdx = locationIds.length - 1
 
   runningIdx = 1
 
-  console.log(locationIds)
+  var origin, destination;
+  var driveId, driveTime, driveText;
 
   for (idx = 0; idx < maxIdx; idx++) {
+    origin = taskInfo[locationIds[idx]].taskGooglePlaceId;
+    destination = taskInfo[locationIds[idx+1]].taskGooglePlaceId;
+
     driveId = 'fakedrive-' + locationIds[idx].toString() + '-to-' + (locationIds[idx + 1]).toString()
-    var driveTime = getDistance(locationIds[idx], locationIds[idx+1])
+    driveTime = distanceInfo[origin][destination].duration.value / 60 / 60
+    driveText = distanceInfo[origin][destination].duration.text
+
     driveData = {
       taskIdHolder: driveId,
       tripId: tripId,
       taskDuration: driveTime,
-      taskName: "Estimated drive time = " + driveTime.toString() + " hours"
+      taskName: "Estimated drive = " + driveText
     }
-    console.log("new drive item")
-    console.log(driveData)
     newTaskIds.splice(runningIdx, 0, driveData.taskIdHolder) // add to new tasks
     newDriveItems[driveData.taskIdHolder] = driveData
     runningIdx += 2 // reset running index
@@ -255,11 +255,12 @@ function rebuildList(tripId, locationIds) {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = null // let state be loading
+    this.state = {distanceInfo: null}
     this.onDragEnd = this.onDragEnd.bind(this);
     this.minTime = "09:00"
     this.tripId = ''
     this.isLoading = false
+    this.googleApiUrl = ""
     this.tripInfo = null
     this.colInfo = null
     this.taskInfo = null
@@ -284,7 +285,7 @@ class App extends Component {
     if ( this.colInfo[source.droppableId].colType !== 'wishlist') {
       // now for both lists, we regenerate the distances
       const sourcePlaces = sourceTaskIds.filter(tag => tag.startsWith('place'))
-      const [newSourceTaskIds, newSourceDriveItems] = rebuildList(this.tripId, sourcePlaces)
+      const [newSourceTaskIds, newSourceDriveItems] = rebuildList(this.tripId, sourcePlaces, this.taskInfo, this.state.distanceInfo)
       for (const [key, value] of Object.entries(newSourceDriveItems)) { 
         if (!Object.keys(this.taskInfo).includes(key)) { this.taskInfo[key] = value }
       }
@@ -295,7 +296,7 @@ class App extends Component {
     if ( this.colInfo[destination.droppableId].colType !== 'wishlist') {
       const destinationPlaces = destinationTaskIds.filter(tag => tag.startsWith('place'))
       // const [newDestinationTaskIds, newDestinationDriveItems] = 
-      const [newDestinationTaskIds, newDestinationDriveItems] = rebuildList(this.tripId, destinationPlaces)
+      const [newDestinationTaskIds, newDestinationDriveItems] = rebuildList(this.tripId, destinationPlaces, this.taskInfo, this.state.distanceInfo)
       for (const [key, value] of Object.entries(newDestinationDriveItems)) { 
         if (!Object.keys(this.taskInfo).includes(key)) { this.taskInfo[key] = value };
       }
@@ -303,14 +304,48 @@ class App extends Component {
     }
   }
 
-  
+  handleScriptLoad = () => {
+    var self = this
+    var places = Object.keys(self.taskInfo).filter(
+      key => key.startsWith('place')).map(
+      key => Object({["placeId"]: this.taskInfo[key].taskGooglePlaceId}))
+    console.log(places)
+    const service = new window.google.maps.DistanceMatrixService
 
+    service.getDistanceMatrix({
+      origins: places,
+      destinations: places,
+      travelMode: 'DRIVING',
+      unitSystem: window.google.maps.UnitSystem.METRIC,
+    }, function(response, status) {
+          if (status !== 'OK') {
+            alert('Error was: ' + status);
+      } else {
+        console.log(response)
+        var reformatDistanceInfo = {}
+        for (var x=0; x < places.length; x++) {
+          var innerDictionary = {}
+          for (var y=0; y < places.length; y++) {
+            innerDictionary[places[y].placeId] = response.rows[x].elements[y]
+          }
+          reformatDistanceInfo[places[x].placeId] = innerDictionary;
+        }
+        self.setState({distanceInfo: reformatDistanceInfo})
+        console.log(reformatDistanceInfo)
+      }
+    })
+  }
+
+  
+//console.log("in here")
+          //const places = Object.keys(this.taskInfo).filter(key => key.startsWith('place')).map(key => this.taskInfo[key].taskGooglePlaceId);
+    
   // Normally you would want to split things out into separate components.
   // But in this example everything is just done in one place for simplicity
   render() {
     return (
       <div>
-      
+      <Script url={this.googleApiUrl} onLoad={() => this.handleScriptLoad()}/>
       { Toolbar(this.tripId) }
 
       <DragDropContext onDragEnd={this.onDragEnd}>
@@ -327,7 +362,7 @@ class App extends Component {
                 <Title>
                 <div>
                 <span class="left">{this.colInfo[colId].colName}</span>
-                <span class="right"><MoreVertIcon /></span>
+                <span class="right"><IconButton size="small" style={{marginTop: -5}}><MoreVertIcon /></IconButton></span>
                 </div>
                 </Title>
                   {renderEmptyNotches(colId, this.colInfo[colId].colStartTime, this.minTime, snapshot.isDraggingOver)}
@@ -376,9 +411,9 @@ class App extends Component {
       
       { /* Wishlist Column */}
       <ColumnToolbar>
-      <Button onClick={() => {handleUpdate(this.colInfo, this.taskInfo, this.isLoading);}}>
-        Update
-      </Button>
+      <ColorButton fullWidth onClick={() => {handleUpdate(this.colInfo, this.taskInfo, this.isLoading);}}>
+        <SaveIcon style={{fontSize: 16}}/> &nbsp; Update
+      </ColorButton>
       <p></p>
       {this.tripInfo.wishlistIds.map((colId, index) => (
           <Droppable droppableId={colId} >

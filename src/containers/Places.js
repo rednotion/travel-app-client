@@ -30,7 +30,7 @@ import Script from 'react-load-script';
 
 export default function Places(props) {
 	const tripId = props.match.params.tripId
-    const [wishlistId, setWishlistId] = useState([])
+  const [wishlistId, setWishlistId] = useState([])
 	const [allTasksInfo, setAllTasksInfo] = useState({})
 	const [isLoading, setIsLoading] = useState(true)
 	const [whatInfo, setWhatInfo] = useState("__home__")
@@ -52,17 +52,21 @@ export default function Places(props) {
 
         async function onLoad() {
             try {
-                var response = await loadTrip()
-                setWishlistId(response.wishlistIds[0])
+                if ((props.tripInfo === null) | (props.tripInfo.tripId !== props.match.params.tripId)) {
+                  var response = await loadTrip()
+                  props.setTripInfo(response)
+                };
+                setWishlistId(props.tripInfo.wishlistIds[0]);
 
-                response = await loadAllTasks()
-                console.log(response)
-                //response = response.filter(taskItem => taskItem.type === 'location')
-                var responseReformat = {}
-                for (var i=0; i < response.length; i++) {
-                    responseReformat[response[i].taskId] = response[i]
-                }
-                setAllTasksInfo(responseReformat)
+                if (props.taskInfo === null) {
+                  response = await loadAllTasks()
+                  var responseReformat = {}
+                  for (var i=0; i < response.length; i++) {
+                      responseReformat[response[i].taskId] = response[i]
+                  }
+                  props.setTaskInfo(responseReformat)
+                };
+                setAllTasksInfo(props.taskInfo);
             } catch (e) {
                 alert(e);
             }
@@ -222,7 +226,7 @@ export default function Places(props) {
 
     function loadAddForm() {
         const locationFieldName = "addLocation"
-        const url = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`
+        const url = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`
     	return (
     		<div>
             <Script 

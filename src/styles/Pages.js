@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 
+export const Logo = styled.span`
+	font-family: "Lacquer";
+	font-weight: bold;
+	font-size: 25px;
+`
+
 export const BelowAppBar = styled.div`
 	margin-top: 60px;
 `
@@ -94,6 +100,7 @@ export const InvisiblePanelFixed = styled.div`
 	padding-left: 20px;
 	padding-bottom: 20px;
 
+	font-family: "Roboto";
 	border-radius: 5px;
 
 	width: 300px;

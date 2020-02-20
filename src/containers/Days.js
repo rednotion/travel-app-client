@@ -38,7 +38,7 @@ export default function Days(props) {
             try {
                     // set column order
                     const infoOnTrip = await loadTrip();
-                    props.setCurrentTripColumns(infoOnTrip.colIds)
+                    props.setTripInfo(infoOnTrip)
                     
                     const dayOutput = await loadAllCols();
                     var dayOutputReformat = {}
@@ -54,43 +54,12 @@ export default function Days(props) {
         onLoad();
     }, []);
 
-
-    function onEditFormSubmit() {}
-    function validateForm() {}
-
-    function loadEditForm() {
-    	return (
-    		<div>
-    		<h2>{allDays[whatInfo].colName}</h2>
-    		<form onSubmit={onEditFormSubmit}>
-    		{formField("Title*", "placeName", fields.colName, "content", handleFieldChange)}
-    		{formField("Location*", "placeLocation", fields.colLocation, "content", handleFieldChange)}
-    		<LoaderButton
-	          block
-	          type="submit"
-	          bsSize="large"
-	          bsStyle="primary"
-	          isLoading={isLoading}
-	          disabled={!validateForm()}
-	        >
-	        Save
-	        </LoaderButton>
-    		</form>
-    		</div>
-    	)
-    }
-    
     function loadFrame() {
     	// home first
     	if (whatInfo === "__home__") {
     		return (<div>Select a day to view or edit details.</div>);
-    	}
-
-    	// otherwise, one of the existing items
-    	if (!letEdit) {
-    		return loadDetails()
     	} else {
-    		return loadEditForm()
+    		return loadDetails()
     	}
     }
 
@@ -110,7 +79,7 @@ export default function Days(props) {
 
     function renderDayLinks(allDays) {
         if (allDays) {
-          const dayLinks = props.currentTripColumns.map(colKey => (placeLink(allDays[colKey].colId, allDays[colKey].colName)))
+          const dayLinks = props.tripInfo.colIds.map(colKey => (placeLink(allDays[colKey].colId, allDays[colKey].colName)))
           return(
             <div>
             	<span className="left"><PanelTitle>Your Days</PanelTitle></span>
@@ -130,13 +99,12 @@ export default function Days(props) {
         return (
             <div>
             <h2>{allDays[whatInfo].colName}</h2>
-            <Button onClick={() => setLetEdit(true)}>{<Glyphicon glyph="edit"/>} Edit</Button>
             <p></p>
             {dayActivities.length > 0 ? (
                 <div>
                 Current activities:<br></br>
                 <ol>
-                    {dayActivities.map(taskId => <li>{taskId}</li>)}
+                    {dayActivities.map(taskId => <li>{props.taskInfo[taskId].taskName}</li>)}
                 </ol>
                 </div>
                 ) : (
