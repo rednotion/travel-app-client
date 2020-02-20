@@ -84,10 +84,11 @@ function launchToolTip(taskId) {
 
 function generateItemTitle(taskItem, isDragging) {
   // const nearestPlaceName = info[nearestPlace].locationName
+  const shortenedTitle = taskItem.taskName.split(",")[0]
   if (taskItem.taskType == 'location'){
     return(
       <div>
-      <span class="left"><b>{taskItem.taskName}</b> <small><i>({taskItem.taskDuration}h)</i></small></span>
+      <span class="left"><b>{shortenedTitle}</b> <small><i>({taskItem.taskDuration}h)</i></small></span>
       {(!isDragging) ? <span class="right">{launchPopUp()}</span> : ""}
       </div>
     ) } else {
@@ -230,7 +231,7 @@ class App extends Component {
     super(props);
     this.state = null // let state be loading
     this.onDragEnd = this.onDragEnd.bind(this);
-    this.minTime = "08:00"
+    this.minTime = "09:00"
     this.tripId = ''
     this.isLoading = false
     this.tripInfo = null
@@ -349,17 +350,9 @@ class App extends Component {
       
       { /* Wishlist Column */}
       <ColumnToolbar>
-      <LoaderButton
-          block
-          onClick={() => {
-            handleUpdate(this.colInfo, this.taskInfo, this.isLoading);
-          }}
-          bsSize="large"
-          bsStyle="primary"
-          isLoading={this.isLoading}
-      >
+      <Button onClick={() => {handleUpdate(this.colInfo, this.taskInfo, this.isLoading);}}>
         Update
-      </LoaderButton>
+      </Button>
       <p></p>
       {this.tripInfo.wishlistIds.map((colId, index) => (
           <Droppable droppableId={colId} >

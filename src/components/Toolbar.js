@@ -1,9 +1,59 @@
 import React from "react";
 import { LinkContainer } from "react-router-bootstrap";
-import { Glyphicon, Button } from "react-bootstrap";
-import { ToolbarHeader, ToolbarButton } from "../styles/Misc.js"
+import { Glyphicon } from "react-bootstrap"; //Button
+import { ToolbarHeader, ToolbarButton } from "../styles/Misc.js";
+import Typography from '@material-ui/core/Typography';
+
+import Button from '@material-ui/core/Button';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import HomeIcon from '@material-ui/icons/Home';
+import TodayIcon from '@material-ui/icons/Today';
+import ExploreIcon from '@material-ui/icons/Explore';
+import ViewDayIcon from '@material-ui/icons/ViewDay';
+import { deepPurple } from '@material-ui/core/colors';
+
+const buttonStyle = {fontSize: 12, marginRight: 10}
+const ColorButton = withStyles(theme => ({
+  root: {
+  	fontSize: 12,
+  	marginRight: 10,
+    color: theme.palette.getContrastText(deepPurple[700]),
+    backgroundColor: deepPurple[700],
+    '&:hover': {
+      backgroundColor: deepPurple[800],
+      color: deepPurple[600]
+    },
+  },
+}))(Button);
 
 export default function Toolbar(tripId) {
+	return(
+	<ToolbarHeader>
+		<Button variant="contained" style={buttonStyle}
+		color="primary" href={"/trip/" + tripId}>
+	        <HomeIcon />&nbsp;&nbsp; Trip Home
+	    </Button>
+
+	    <Button variant="contained" style={buttonStyle}
+	    color="primary" href={"/days/" + tripId}>
+	        <TodayIcon />&nbsp;&nbsp; Days
+	    </Button>
+
+	    <Button variant="contained" style={buttonStyle}
+	    color="primary" href={"/places/" + tripId}>
+	        <ExploreIcon />&nbsp;&nbsp; Places
+	    </Button>
+
+	    <ColorButton variant="contained" 
+	    color="primary"
+	    href={"/plan/" + tripId}>
+	        <ViewDayIcon />&nbsp;&nbsp; Planner
+	    </ColorButton>
+    </ToolbarHeader>
+	)
+}
+
+export function oldToolbar(tripId) {
 	return (
 	<ToolbarHeader>
 	      <ToolbarButton>
