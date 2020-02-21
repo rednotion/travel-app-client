@@ -31,6 +31,8 @@ import { lightBlue } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
 import ControlCameraIcon from '@material-ui/icons/ControlCamera';
 
+import ScrollMenu from 'react-horizontal-scrolling-menu';
+
 //////////
 
 export default function Planner(props) {

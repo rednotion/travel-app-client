@@ -10,7 +10,9 @@ import { AlignPanels, BackgroundPanel, PanelTitle, PanelSubtitle, InvisiblePanel
 	InvisiblePanelFixed } from "../styles/Pages.js";
 import Toolbar from "../components/Toolbar.js";
 import { FormColumn, FormRow } from "../styles/Forms.js"
-
+import { LacquerH3 } from "../styles/Text.js";
+import { PurpleButton } from "../styles/Buttons.js";
+import EditIcon from '@material-ui/icons/Edit';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { changeDate } from "../components/DateHelper.js"
@@ -134,16 +136,14 @@ export default function Trip(props) {
 			<>
 			<AlignPanels>
 			<InvisiblePanelFixed pullLeft>
-				<PanelTitle>{props.tripInfo.tripName}</PanelTitle>
-						{<Glyphicon glyph="map-marker"/>} {props.tripInfo.tripLocation}<br></br>
-						<b>Trip Begin</b>: {props.tripInfo.tripStartDate}<br></br>
-						<b>Trip End</b>: {props.tripInfo.tripEndDate}<br></br>
-
-				<PanelSubtitle>Tools</PanelSubtitle>
-				<ButtonToolbar>
-					<Button variant="primary" block href={"/plan/"+tripId}>Plan my trip</Button>
-					<Button variant="light" block onClick={() => setToEdit(true)}>Edit Trip Details</Button>
-				</ButtonToolbar>
+				<LacquerH3>{props.tripInfo.tripName}</LacquerH3>
+				{<Glyphicon glyph="map-marker"/>} {props.tripInfo.tripLocation}<br></br>
+				<b>Trip Begin</b>: {props.tripInfo.tripStartDate}<br></br>
+				<b>Trip End</b>: {props.tripInfo.tripEndDate}<br></br>
+				<p></p>
+				<PurpleButton variant="contained" onClick={() => setToEdit(true)}>
+		          <EditIcon />&nbsp;&nbsp; Edit Trip
+		        </PurpleButton>
 			</InvisiblePanelFixed>
 			{(toEdit)
 				? (
@@ -175,7 +175,9 @@ export default function Trip(props) {
 					</InvisiblePanel>
 				) : (
 					<InvisiblePanel>
-						Blank
+					<b>Trip Notes</b>
+					<p></p>
+					{props.tripInfo.tripNotes}
 					</InvisiblePanel>
 				)}
 			</AlignPanels>

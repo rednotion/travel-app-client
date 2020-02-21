@@ -13,10 +13,11 @@ import "../styles/HoverStyles.css"
 
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
-import { PurpleButton, GreenButton } from '../styles/Buttons.js';
+import { PurpleButton, GreenButton, RedButton } from '../styles/Buttons.js';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import EditIcon from '@material-ui/icons/Edit';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 
 import Script from 'react-load-script';
@@ -106,14 +107,19 @@ export default function Places(props) {
     	return (
     		<div>
     		<LacquerH3>{allTasksInfo[whatInfo].taskName}</LacquerH3>
-    		<PurpleButton variant="contained" onClick={() => setLetEdit(true)}>
+    		<PurpleButton variant="contained" onClick={() => setLetEdit(true)} style={{marginRight: 10}}>
           <EditIcon />&nbsp;&nbsp; Edit
         </PurpleButton>
+        <RedButton variant="contained" onClick={handleDelete}>
+          <DeleteOutlineOutlinedIcon />&nbsp;&nbsp; Delete
+        </RedButton>
     		<p></p>
     		{allTasksInfo[whatInfo].taskNotes}
     		</div>
     	);
     }
+
+    function handleDelete(event) {}
 
     function handleEditChange(event, changeFunction) {
         changeFunction(event.target.value)

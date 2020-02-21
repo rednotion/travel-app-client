@@ -4,7 +4,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import TodayIcon from '@material-ui/icons/Today';
 import ExploreIcon from '@material-ui/icons/Explore';
 import ViewDayIcon from '@material-ui/icons/ViewDay';
-import { deepPurple, green } from '@material-ui/core/colors';
+import { deepPurple, green, red } from '@material-ui/core/colors';
 
 export const PurpleButton = withStyles(theme => ({
   root: {
@@ -27,6 +27,18 @@ export const GreenButton = withStyles(theme => ({
     '&:hover': {
       backgroundColor: green[800],
       color: green[600]
+    },
+  },
+}))(Button);
+
+export const RedButton = withStyles(theme => ({
+  root: {
+    fontSize: 10,
+    color: theme.palette.getContrastText(red[700]),
+    backgroundColor: red[700],
+    '&:hover': {
+      backgroundColor: red[800],
+      color: red[600]
     },
   },
 }))(Button);
