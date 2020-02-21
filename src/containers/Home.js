@@ -5,7 +5,7 @@ import "./Login.css";
 import google_integration from "../images/google_integration.png";
 import places from "../images/places.png";
 import planner_one from "../images/planner_one.png";
-import planner_two from "../images/planner_two.png";
+import utilities from "../images/utilities.png";
 
 import { BackgroundPanel } from "../styles/Pages.js";
 import { ToolbarButtonLink } from "../components/MuiRouteLink.js";
@@ -18,10 +18,10 @@ const blockStyle = {
 	marginTop: 50,
 }
 const subtitleStyle = {
-	width: 450,
+	width: 475,
 	borderLeft: "5px solid #F7620C",
 	color: "#e2e2e2",
-	fontSize: 12,
+	fontSize: 13,
 	margin: "auto",
 	marginTop: 10,
 	textAlign: "left",
@@ -55,15 +55,19 @@ export default function Home(props) {
     Plan and change your trip whenever with our <span style={{fontWeight: 700}}>drag-and-drop</span> lists.
     <br></br>
     <div style={subtitleStyle}>
-	    Daily columns are generated for you based on your trip dates & times<br></br>
-	    Drive time in between locations is <span style={{fontWeight: 700}}>automatically estimated</span> for you!
+	    Days are generated for you based on your trip dates & times.<br></br>
+	    The toolbar & wishlist travel with you as you scroll the page.
     </div>
     </div>
 
     <div style={blockStyle}>
-    <img src={planner_two} style={imageStyle} width="500px"></img>
+    <img src={utilities} style={imageStyle} width="500px"></img>
     <p></p>
-    To make things easier, the <span style={{fontWeight: 700}}>toolbar follows</span> you around the page as you plan.
+    Planning is even easier with <span style={{fontWeight: 700}}>in-built distance utilities</span>!
+    <div style={subtitleStyle}>
+	    We suggest the nearest places so you don't have to look it up.<br></br>
+	    Drive-time in between locations is <span style={{fontWeight: 700}}>automatically estimated</span> for you!
+    </div>
     </div>
 
     <div style={{marginTop: 30, marginBottom: 60}}>
