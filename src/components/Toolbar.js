@@ -11,8 +11,10 @@ import TodayIcon from '@material-ui/icons/Today';
 import ExploreIcon from '@material-ui/icons/Explore';
 import ViewDayIcon from '@material-ui/icons/ViewDay';
 import { deepPurple } from '@material-ui/core/colors';
+import styled from 'styled-components';
 
 import { ToolbarButtonLink } from './MuiRouteLink.js';
+import { Logo, CurrentTrip } from "../styles/Pages.js"
 
 const buttonStyle = {fontSize: 12, marginRight: 10}
 const ColorButton = withStyles(theme => ({
@@ -28,9 +30,11 @@ const ColorButton = withStyles(theme => ({
   },
 }))(Button);
 
-export default function Toolbar(tripId) {
+
+export default function Toolbar(tripId, tripName) {
 	return(
 	<ToolbarHeader>
+		<CurrentTrip>{tripName} :</CurrentTrip>
 		<ToolbarButtonLink to={"/trip/" + tripId} primary="Trip Home" icon={<HomeIcon />}/>
 		<ToolbarButtonLink to={"/days/" + tripId} primary="Days" icon={<TodayIcon />}/>
 		<ToolbarButtonLink to={"/places/" + tripId} primary="Places" icon={<ExploreIcon />}/>

@@ -87,47 +87,12 @@ export default function Days(props) {
     function placeLink(colId, title) {
     	// <ListGroupItem key={placeId} onClick={() => loadDetails(placeId)}>
 	    return(
-	        <ListGroupItem key={colId} onClick={() => handleLinkClick(colId)} style={{fontFamily: "Roboto"}}>
+	        <ListGroupItem key={colId} onClick={() => handleLinkClick(colId)} 
+            className="LinkStyle">
 	            <b><Glyphicon glyph="screenshot"/></b>&nbsp;&nbsp;{title}
 	        </ListGroupItem>
 	    );
     }
-
-    // async function checkInfo() {
-    //     console.log("in checkInfo")
-    //     var response
-    //     // check trips first
-    //     if (props.tripInfo === null) {
-    //         try {
-    //             response = await loadTrip();
-    //             props.setTripInfo(response)
-    //         } catch (e) { alert(e); }
-    //     }
-
-    //     // check days 
-    //     if (props.colInfo === null) {
-    //         try {
-    //             response = await loadCols();
-    //             var dayOutputReformat = {}
-    //             for (var i=0; i < response.length; i++) {
-    //                 dayOutputReformat[response[i].colId] = response[i]
-    //             }
-    //             props.setColInfo(dayOutputReformat);
-    //         } catch (e) { alert(e);}
-    //     }
-
-    //     // check taskInfo 
-    //     if (props.taskInfo === null) {
-    //         try {
-    //             response = await loadTasks();
-    //             var taskOutputReformat = {}
-    //             for (var i=0; i < response.length; i++) {
-    //                 taskOutputReformat[response[i].taskId] = response[i]
-    //             }
-    //             props.setTaskInfo(taskOutputReformat);
-    //         } catch (e) { alert(e);}
-    //     }
-    // }
 
     function renderDayLinks() {
         const dayLinks = props.tripInfo.colIds.map(colKey => (placeLink(props.colInfo[colKey].colId, props.colInfo[colKey].colName)))
@@ -174,7 +139,7 @@ export default function Days(props) {
 
 	return (
 		<div>
-		{Toolbar(tripId)}
+		{(!isLoading) && Toolbar(tripId, props.tripInfo.tripName)}
 
 		<BackgroundPanel>
 	    <AlignPanels>

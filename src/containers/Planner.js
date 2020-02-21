@@ -14,7 +14,8 @@ import LoaderButton from "../components/LoaderButton";
 import { BackgroundPanel, PanelTitle, PanelSubtitlem, InvisiblePanel, Padding20 } from "../styles/Pages"
 import { Title, AlignColumns, ColumnContainer, AlignItems, ColumnToolbar,
   ItemContainer, AlignRuler, Ruler, RulerNotch, EmptyRulerNotch, DriveContainer,
-  WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer, DailyColumns } from "../styles/DDList.js"
+  WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer, DailyColumns,
+  InsideColumnToolBar } from "../styles/DDList.js"
 import Toolbar from "../components/Toolbar.js";
 import { LacquerH3 } from "../styles/Text.js";
 import { PurpleButton, GreenButton } from "../styles/Buttons.js";
@@ -32,6 +33,7 @@ import { lightBlue } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
 import ControlCameraIcon from '@material-ui/icons/ControlCamera';
 import MapIcon from '@material-ui/icons/Map';
+import Typography from '@material-ui/core/Typography';
 
 
 //////////
@@ -99,28 +101,32 @@ function launchPopUp(taskItem) {
       <Padding20>
       <LacquerH3>{taskItem.taskName}</LacquerH3>
       <p></p>
-      <div fontFamily="Roboto" fontSize="14"><b>Note</b>: Please head to <b>Places</b> tab to make edits to Location</div>
+      <div style={{fontFamily: "Montserrat", fontSize: 14}}><b>Note</b>: Please head to <b>Places</b> tab to make edits to Location</div>
       <p></p>
       <form onSubmit={(e) => handleSubmit(e, taskItem)}>
       <TextField 
-              id="editTime"
-              label="Duration" 
-              fullWidth
-              margin="dense"
-              variant="filled"
-              type="number"
-              defaultValue={taskItem.taskDuration}
-              InputProps={{style: {fontSize: 12} }}
+        id="editTime"
+        label={<Typography style={{fontFamily: "Montserrat"}}>
+          Duration
+        </Typography>}
+        fullWidth
+        margin="dense"
+        variant="filled"
+        type="number"
+        defaultValue={taskItem.taskDuration}
+        InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
       />
       <TextField 
-              id="editNotes"
-              label="Notes" 
-              fullWidth
-              margin="dense"
-              variant="filled"
-              multiline rows="4"
-              defaultValue={taskItem.taskNotes}
-              InputProps={{style: {fontSize: 12} }}
+        id="editNotes"
+        label={<Typography style={{fontFamily: "Montserrat"}}>
+          Notes
+        </Typography>}
+        fullWidth
+        margin="dense"
+        variant="filled"
+        multiline rows="4"
+        defaultValue={taskItem.taskNotes}
+        InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
       />
       <p></p>
       {LoaderButton(false, false, "Update")}
@@ -382,7 +388,7 @@ class App extends Component {
     return (
       <div>
       <Script url={this.googleApiUrl} onLoad={() => this.handleScriptLoad()}/>
-      { Toolbar(this.tripId) }
+      { Toolbar(this.tripId, this.tripInfo.tripName) }
       <DragDropContext onDragEnd={this.onDragEnd}>
         <AlignColumns>
         { /* Daily Columns */}
@@ -424,10 +430,8 @@ class App extends Component {
                             itemDuration={parseFloat(this.taskInfo[taskId].taskDuration)}
   		                    >
                           <ItemTitle>{generateItemTitle(this.taskInfo[taskId], snapshot.isDragging)}</ItemTitle>
-                          <ItemBody>
-                            {this.taskInfo[taskId].taskNotes}
-                            <div className="right">{!this.state.isLoading && this.launchToolTip(taskId)}</div>
-                          </ItemBody>
+                          <div className="right">{!this.state.isLoading && this.launchToolTip(taskId)}</div>
+                          {this.taskInfo[taskId].taskNotes}
   		                    </ItemContainer>
   		                  )}
   		                </Draggable>
@@ -448,11 +452,12 @@ class App extends Component {
       
       { /* Wishlist Column */}
       <ColumnToolbar>
+      <InsideColumnToolBar>
       <GreenButton style={{fontSize:14, marginBottom: 10}} fullWidth onClick={() => {handleUpdate(this.colInfo, this.taskInfo, this.isLoading);}}>
-        <SaveIcon style={{fontSize: 14}}/>&nbsp; Save Changes
+        <SaveIcon style={{fontSize: 14}}/>&nbsp;Save Changes
       </GreenButton>
       <PurpleButton variant="contained" fullWidth style={{fontSize: 12}}>
-        <MapIcon />&nbsp; View on map
+        <MapIcon />&nbsp;View on map
       </PurpleButton>
       <p></p>
       {this.tripInfo.wishlistIds.map((colId, index) => (
@@ -488,6 +493,7 @@ class App extends Component {
             )}
           </Droppable>
       ))}
+      </InsideColumnToolBar>
       </ColumnToolbar>
       </AlignColumns>
       </DragDropContext>

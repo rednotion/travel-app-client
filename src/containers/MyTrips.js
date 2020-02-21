@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FormGroup, FormControl, Button, ControlLabel, Glyphicon } from "react-bootstrap";
+import { FormGroup, FormControl, ListGroupItem, Glyphicon } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 import { API } from "aws-amplify";
@@ -7,7 +7,8 @@ import config from "../config";
 
 import { useFormFields } from "../libs/hooksLib";
 import LoaderButton from "../components/LoaderButton";
-import { AlignPanels, Panel, PanelTitle, LocationField, InvisibleColumnLeft, InvisibleColumnRight } from "../styles/Pages.js";
+import { AlignPanels, Panel, PanelTitle, LocationField, InvisibleColumnLeft, InvisibleColumnRight,
+  BackgroundPanel, InvisiblePanel } from "../styles/Pages.js";
 import { ListItemLink } from "../components/MuiRouteLink.js"
 
 // import { Autocomplete, GoogleApiWrapper } from 'google-maps-react';
@@ -16,17 +17,15 @@ import Autocomplete from 'react-google-autocomplete';
 //import SearchBar from 'material-ui-search-bar';
 import Script from 'react-load-script';
 
+import "../styles/HoverStyles.css"
+
 //material UI
+import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FilledInput from '@material-ui/core/FilledInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import { makeStyles } from '@material-ui/core/styles';
-import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -72,26 +71,32 @@ export default function MyTrips(props) {
       return API.get("travel", "/trips");
   }
 
-  function formField(title, id, field, type) {
-    return(
-        <FormGroup controlId={id} bsSize="small">
-          <ControlLabel>{title}</ControlLabel>
-          <FormControl
-            autoFocus
-            type={type}
-            onChange={handleFieldChange}
-            value={field}
-          />
-        </FormGroup>
+  function tripLink(tripId, title) {
+      const path = "trip/" + tripId
+      return(
+          <LinkContainer key={tripId} to={path}>
+          <ListGroupItem className="LinkStyle">
+              <Glyphicon glyph="chevron-right"></Glyphicon> &nbsp;{title}
+          </ListGroupItem>
+          </LinkContainer>
       );
   }
 
-  function tripLink(tripId, title) {
-    const path = "trip/" + tripId
-    return (
-      <ListItemLink to={path} icon={<ChevronRightRoundedIcon fontSize="large" />} primary={title} />
-    );
-  }
+
+  // function tripLink(tripId, title) {
+  //   const path = "trip/" + tripId
+  //   return (
+  //     <ListItemLink to={path}
+  //     disableTypography
+  //     icon={<ChevronRightRoundedIcon fontSize="large" />}
+  //     primary={
+  //       <Typography
+  //       style={{fontFamily: "Montserrat", fontWeight:600, fontSize: 16}}>
+  //       {title}
+  //       </Typography>} 
+  //     />
+  //   );
+  // }
 
   function renderTripLinks(allTripInfo) {
     if (allTripInfo) {
@@ -203,23 +208,16 @@ export default function MyTrips(props) {
     }
   }
 
-  const useStyles = makeStyles(theme => ({
-    root: {
-      width: '100%',
-      maxWidth: 360,
-      backgroundColor: theme.palette.background.paper,
-    },
-  }));
-
   const googleUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`
   
   return (
+    <BackgroundPanel>
     <AlignPanels>
     <Script 
         url={googleUrl}
         onLoad={() => handleScriptLoad()}
     />
-    <Panel>
+    <InvisiblePanel>
       <PanelTitle>Your Trips</PanelTitle>
       {!isLoading 
         ? (
@@ -231,96 +229,106 @@ export default function MyTrips(props) {
         )
     }
       
-    </Panel>
+    </InvisiblePanel>
 
-    <Panel>
+    <InvisiblePanel>
 
       <PanelTitle><PlaylistAddIcon style={{fontSize: 25, margin: -4}}/> Add New Trip</PanelTitle>
       <form onSubmit={handleSubmit}>
         <TextField
           id="tripName"
-          InputProps={{style: {fontSize: 12} }}
-          label="Trip Name"
+          label={<Typography style={{fontFamily: "Montserrat"}}>
+            Trip Name
+          </Typography>}
           fullWidth
           margin="dense"
           variant="filled" 
           onChange={handleFieldChange}
           value={fields.tripName}
+          InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
         />
 
         <TextField 
           id="autocompleteLocation" 
-          label="Location" 
+          label={<Typography style={{fontFamily: "Montserrat"}}>
+            Location
+          </Typography>}
           fullWidth
           data = ""
           margin="dense"
           variant="filled"
-          InputProps={{style: {fontSize: 12} }}
+          InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
         />
         
         <AlignPanels>
         <InvisibleColumnLeft>
         <TextField
           id="tripStartDate"
-          label="Arrival Date"
+          label={<Typography style={{fontFamily: "Montserrat"}}>
+            Arrival Date
+          </Typography>}
           margin="dense"
           variant="filled"
           fullWidth
           type="date"
           value={fields.tripStartDate}
           onChange={handleFieldChange}
-          InputLabelProps={
-            {shrink: true,}
-          }
+          InputLabelProps={{shrink: true}}
+          InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
         />
         <TextField
           id="tripStartTime"
-          label="Arrival Time"
+          label={<Typography style={{fontFamily: "Montserrat"}}>
+            Arrival Time
+          </Typography>}
           margin="dense"
           variant="filled"
           fullWidth
           type="time"
           value={fields.tripStartTime}
           onChange={handleFieldChange}
-          InputLabelProps={
-            {shrink: true,}
-          }
+          InputLabelProps={{shrink: true}}
+          InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
         />
         </InvisibleColumnLeft>
 
         <InvisibleColumnRight>
         <TextField
           id="tripEndDate"
-          label="Departure Date"
+          label={<Typography style={{fontFamily: "Montserrat"}}>
+            Departure Date
+          </Typography>}
           fullWidth
           margin="dense"
           variant="filled"
           type="date"
           value={fields.tripEndDate}
           onChange={handleFieldChange}
-          InputLabelProps={
-            {shrink: true,}
-          }
+          InputLabelProps={{shrink: true}}
+          InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
         />
         <TextField
           id="tripEndTime"
-          label="Departure Time"
+          label={<Typography style={{fontFamily: "Montserrat"}}>
+            Departure Time
+          </Typography>}
           fullWidth
           margin="dense"
           variant="filled"
           type="time"
           value={fields.tripEndTime}
           onChange={handleFieldChange}
-          InputLabelProps={
-            {shrink: true,}
-          }
+          InputLabelProps={{shrink: true}}
+          InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
         />
         </InvisibleColumnRight>
         </AlignPanels>
 
         <TextField
           id="tripNotes"
-          label="Additional Notes"
+          label={<Typography style={{fontFamily: "Montserrat"}}>
+            Additional Notes
+          </Typography>}
           fullWidth
           multiline rows="4"
           margin="dense"
@@ -328,17 +336,15 @@ export default function MyTrips(props) {
           type="time"
           value={fields.tripNotes}
           onChange={handleFieldChange}
-          InputLabelProps={
-            {shrink: true,},
-            {style: {fontSize: 12} }
-          }
+          InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
         />
 
         <p></p>
         {LoaderButton(formIsLoading, false, "Create")}
       </form>
-    </Panel>
+    </InvisiblePanel>
     </AlignPanels>
+    </BackgroundPanel>
   );
 }
 

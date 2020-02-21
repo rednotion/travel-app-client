@@ -11,6 +11,7 @@ const FormSubmitButton = withStyles(theme => ({
     fontSize: 12,
     marginRight: 10,
     height: 50,
+    fontFamily: "Rubik Mono One",
     color: theme.palette.getContrastText(teal[700]),
     backgroundColor: teal[700],
     '&:hover': {
@@ -24,6 +25,7 @@ const FormDisabledButton = withStyles(theme => ({
   root: {
     fontSize: 12,
     marginRight: 10,
+    fontFamily: "Rubik Mono One",
     height: 50,
     color: theme.palette.getContrastText(grey[700]),
     backgroundColor: grey[700],

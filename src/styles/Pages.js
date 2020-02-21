@@ -5,15 +5,21 @@ export const Logo = styled.span`
 	font-size: 20px;
 `
 
+export const CurrentTrip = styled.span`
+	color: #F7620C;
+	font-family: "Rubik Mono One";
+	font-size: 15px;
+	margin-right: 15px;
+`
+
 export const BelowAppBar = styled.div`
-	margin-top: 60px;
+	margin-top: 70px;
 `
 
 export const AlignPanels = styled.div`
   	display: flex;
   	flex-direction: row;
-
-`;
+`
 
 export const LocationField = styled.div`
 	z-index: 2000;
@@ -51,14 +57,15 @@ export const BackgroundPanel = styled.div`
 	background: #D6D7D7;
 	box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.3);
 
+	font-family: "Montserrat";
+
 	flex-grow: 1;
 `;
 
 export const PanelTitle = styled.h3`
 	margin-top: 0px;
 	padding: 1px;
-	font-family: "Roboto";
-	font-weight: bold;
+	font-family: "Rubik Mono One";
 `;
 
 export const PanelSubtitle = styled.h4`
@@ -95,6 +102,12 @@ export const InvisibleColumnRight = styled.div`
 	flex-grow: 1;
 `;
 
+export const TitlePanel = styled.div`
+	padding-top: 12px;
+	padding-left: 20px;
+	padding-right: 20px;
+`
+
 
 export const InvisiblePanelFixed = styled.div`
 	margin: 8px;
@@ -106,5 +119,5 @@ export const InvisiblePanelFixed = styled.div`
 	font-family: "Roboto";
 	border-radius: 5px;
 
-	width: 300px;
+	width: 200px;
 `;

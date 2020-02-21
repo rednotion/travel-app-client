@@ -46,3 +46,19 @@
 .LocationTip:hover{
 	background: #b3b3b3;
 }
+
+.LinkStyle {
+	font-family: "Montserrat";
+	font-weight: 800;
+	background-color: #c2c3c4;
+    color: #202428;
+    border-radius: 5px; 
+    border: 0px;
+    margin-bottom: 3px;
+}
+.LinkStyle:hover {
+	background-color: #faa97a;
+}
+.LinkStyle:focus {
+	outline: none;
+}

@@ -17,6 +17,7 @@ import { PurpleButton, GreenButton, RedButton } from '../styles/Buttons.js';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import EditIcon from '@material-ui/icons/Edit';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 
@@ -33,11 +34,11 @@ export default function Places(props) {
 	    taskDuration: "",
 	    taskNotes: ""
   	});
-    // for editing
-    const [updateTaskDuration, setUpdateTaskDuration] = useState(0.0)
-    const [updateTaskNotes, setUpdateTaskNotes] = useState(null)
-    const [updateTaskName, setUpdateTaskName] = useState(null)
-    const [updateTaskGooglePlaceId, setUpdateTaskGooglePlaceId] = useState(null)
+  // for editing
+  const [updateTaskDuration, setUpdateTaskDuration] = useState(0.0)
+  const [updateTaskNotes, setUpdateTaskNotes] = useState(null)
+  const [updateTaskName, setUpdateTaskName] = useState(null)
+  const [updateTaskGooglePlaceId, setUpdateTaskGooglePlaceId] = useState(null)
 
 	// On load, load trips 
 	useEffect(() => {
@@ -105,17 +106,18 @@ export default function Places(props) {
 
     function loadDetails() {
     	return (
-    		<div>
+        <div>
     		<LacquerH3>{allTasksInfo[whatInfo].taskName}</LacquerH3>
     		<PurpleButton variant="contained" onClick={() => setLetEdit(true)} style={{marginRight: 10}}>
-          <EditIcon />&nbsp;&nbsp; Edit
+          <EditIcon />&nbsp;Edit
         </PurpleButton>
         <RedButton variant="contained" onClick={handleDelete}>
-          <DeleteOutlineOutlinedIcon />&nbsp;&nbsp; Delete
+          <DeleteOutlineOutlinedIcon />&nbsp;Delete
         </RedButton>
-    		<p></p>
+    		<div style={{marginTop: 50}}>
     		{allTasksInfo[whatInfo].taskNotes}
-    		</div>
+        </div>
+        </div>
     	);
     }
 
@@ -130,7 +132,7 @@ export default function Places(props) {
 
         // make new body
         currentPlaceInfo['taskName'] = document.getElementById('editLocation').value
-        if (updateTaskDuration !== null) { currentPlaceInfo['taskDuration'] = updateTaskDuration }
+        currentPlaceInfo['taskDuration'] = document.getElementById("editTaskDuration").value
         if (updateTaskNotes !== null ) { currentPlaceInfo['taskNotes'] = updateTaskNotes }
         if (typeof document.getElementById('editLocation').data !== "undefined") {
             currentPlaceInfo['taskGooglePlaceId'] = document.getElementById('editLocation').data
@@ -155,30 +157,34 @@ export default function Places(props) {
             url={url}
             onLoad={() => handleScriptLoad(locationFieldName)}
             />
-            <h2 style={{fontFamily: "Roboto"}}>Edit: {currentPlaceInfo.taskName}</h2>
+            <LacquerH3>Edit: {currentPlaceInfo.taskName}</LacquerH3>
 
             <form onSubmit={(e) => onEditFormSubmit(e, currentPlaceInfo)}>
             <TextField 
               id={locationFieldName}
-              label="Location" 
+              label={<Typography style={{fontFamily: "Montserrat"}}>
+                Location
+              </Typography>}
               fullWidth
               data = {null}
               margin="dense"
               variant="filled"
-              InputProps={{style: {fontSize: 12} }}
+              InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
               defaultValue={currentPlaceInfo.taskName}
             />
 
             <TextField
               id="editTaskDuration"
-              InputProps={{style: {fontSize: 12} }}
-              label="Duration"
+              label={<Typography style={{fontFamily: "Montserrat"}}>
+                Duration (hours)
+              </Typography>}
               fullWidth
               margin="dense"
               type="number"
               variant="filled" 
               onChange={(e) => handleEditChange(e, setUpdateTaskDuration)}
-              defaultValue={currentPlaceInfo.taskDuration}
+              defaultValue={parseInt(currentPlaceInfo.taskDuration)}
+              InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
             />
 
             <TextField
@@ -192,10 +198,8 @@ export default function Places(props) {
               //value={updateTaskNotes}
               defaultValue={currentPlaceInfo.taskNotes}
               onChange={(e) => handleEditChange(e, setUpdateTaskNotes)}
-              InputLabelProps={
-                {shrink: true},
-                {style: {fontSize: 12} }
-              }
+              InputLabelProps={{shrink: true}}
+              InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
             />
             <p></p>
             {LoaderButton(false, 
@@ -246,34 +250,40 @@ export default function Places(props) {
             url={url}
             onLoad={() => handleScriptLoad(locationFieldName)}
             />
-    		<h2 style={{fontFamily: "Roboto"}}>Add a new place</h2>
+    		<LacquerH3>Add a new place</LacquerH3>
 
     		<form onSubmit={onAddFormSubmit}>
             <TextField 
               id={locationFieldName}
-              label="Location" 
+              label={<Typography style={{fontFamily: "Montserrat"}}>
+                Location
+              </Typography>}
               fullWidth
               data = ""
               margin="dense"
               variant="filled"
-              InputProps={{style: {fontSize: 12} }}
+              InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
             />
 
             <TextField
               id="taskDuration"
-              InputProps={{style: {fontSize: 12} }}
-              label="Duration"
+              label={<Typography style={{fontFamily: "Montserrat"}}>
+                Duration
+              </Typography>}
               fullWidth
               margin="dense"
               type="number"
               variant="filled" 
               onChange={handleFieldChange}
               value={fields.taskDuration}
+              InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
             />
 
             <TextField
               id="taskNotes"
-              label="Additional Notes"
+              label={<Typography style={{fontFamily: "Montserrat"}}>
+                Additional Notes
+              </Typography>}
               fullWidth
               multiline rows="4"
               margin="dense"
@@ -281,10 +291,7 @@ export default function Places(props) {
               type="time"
               value={fields.taskNotes}
               onChange={handleFieldChange}
-              InputLabelProps={
-                {shrink: true},
-                {style: {fontSize: 12} }
-              }
+              InputProps={{style: {fontSize: 14, fontFamily: "Montserrat"} }}
             />
             <p></p>
             {LoaderButton(isLoading, !validateForm(), "Submit")}
@@ -321,7 +328,7 @@ export default function Places(props) {
     function placeLink(placeId, title) {
     	// <ListGroupItem key={placeId} onClick={() => loadDetails(placeId)}>
 	    return(
-	        <ListGroupItem key={placeId} onClick={() => handleLinkClick(placeId)} style={{fontFamily:"Roboto"}}>
+	        <ListGroupItem key={placeId} onClick={() => handleLinkClick(placeId)} className="LinkStyle">
 	            <b><Glyphicon glyph="pushpin"/></b>&nbsp;&nbsp;{title}
 	        </ListGroupItem>
 	    );
@@ -350,8 +357,7 @@ export default function Places(props) {
 	return (
 		<div>
         
-
-		{Toolbar(tripId)}
+		{!isLoading && Toolbar(tripId, props.tripInfo.tripName)}
 
 		<BackgroundPanel>
 		<AlignPanels>

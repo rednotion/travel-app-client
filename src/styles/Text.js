@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
 
-export const LacquerH3 = styled.h3`
+export const LacquerH3 = styled.h4`
 	font-family: "Rubik Mono One";
-	font-size: 25px;
-	color: "#1a237e";
+	font-size: 20px;
 `

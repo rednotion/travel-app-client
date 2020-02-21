@@ -9,6 +9,7 @@ import { deepPurple, green, red } from '@material-ui/core/colors';
 export const PurpleButton = withStyles(theme => ({
   root: {
   	fontSize: 10,
+    fontFamily: "Rubik Mono One",
     color: theme.palette.getContrastText(deepPurple[700]),
     backgroundColor: deepPurple[700],
     '&:hover': {
@@ -18,10 +19,23 @@ export const PurpleButton = withStyles(theme => ({
   },
 }))(Button);
 
+export const BlueButton = withStyles(theme => ({
+  root: {
+    fontSize: 10,
+    fontFamily: "Rubik Mono One",
+    color: "#eaebeb",
+    backgroundColor: "#0BA1BC",
+    '&:hover': {
+      backgroundColor: "#0a91a9",
+      color: "#0a91a9",
+    },
+  },
+}))(Button);
 
 export const GreenButton = withStyles(theme => ({
   root: {
     fontSize: 10,
+    fontFamily: "Rubik Mono One",
     color: theme.palette.getContrastText(green[700]),
     backgroundColor: green[700],
     '&:hover': {
@@ -34,6 +48,7 @@ export const GreenButton = withStyles(theme => ({
 export const RedButton = withStyles(theme => ({
   root: {
     fontSize: 10,
+    fontFamily: "Rubik Mono One",
     color: theme.palette.getContrastText(red[700]),
     backgroundColor: red[700],
     '&:hover': {
