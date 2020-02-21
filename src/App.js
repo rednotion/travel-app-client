@@ -21,6 +21,7 @@ import BlurOnIcon from '@material-ui/icons/BlurOn';
 import { makeStyles } from '@material-ui/core/styles';
 import AirplanemodeActiveIcon from '@material-ui/icons/AirplanemodeActive';
 import GestureIcon from '@material-ui/icons/Gesture';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 
 { /* The <> or Fragment component can be thought of as a placeholder component. 
 We need this because in the case the user is not logged in, we want to render two links. 
@@ -127,7 +128,12 @@ function App(props) {
       fontSize: 15,
     },
     buttonText: {
-      fontSize: 12
+      fontSize: 12,
+      color: "#999b9d",
+      fontFamily: "Rubik Mono One",
+      '&:hover': {
+        color: "#f98c4e",
+      }
     }
   }));
 
@@ -137,17 +143,19 @@ function App(props) {
     (!isAuthenticating & !isLoading)&&
     <div className="App container">
     <AppBar position="fixed">
-      <Toolbar>
+      <Toolbar style={{backgroundColor: "#121416"}}>
         <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" href="/">
-          <GestureIcon fontSize="large"/>
+          <GestureIcon style={{color:"#F7620C"}} fontSize="large"/>
         </IconButton>
         <Typography variant="h6" className={classes.title}>
           <Logo>takemethere</Logo>
         </Typography>
          {isAuthenticated 
           ? <>
-            <AppBarButtonLink to="/trips" primary="&nbsp;&nbsp;My Trips" icon={<AirplanemodeActiveIcon/>}/>
-            <Button color="inherit" className={classes.buttonText} onClick={handleLogout}>Logout</Button>
+            <AppBarButtonLink to="/trips" primary="&nbsp;Trips" icon={<AirplanemodeActiveIcon/>}/>
+            <Button color="inherit" className={classes.buttonText} onClick={handleLogout}>
+            <MeetingRoomIcon/>&nbsp;Logout
+            </Button>
             </>
           : <>
             <AppBarButtonLink to="/signup" primary="Signup"/>

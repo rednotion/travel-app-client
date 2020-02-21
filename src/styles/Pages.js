@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 export const Logo = styled.span`
-	font-family: "Lacquer";
-	font-weight: bold;
-	font-size: 25px;
+	font-family: "Rubik Mono One";
+	font-size: 20px;
 `
 
 export const BelowAppBar = styled.div`
@@ -49,7 +48,7 @@ export const BackgroundPanel = styled.div`
 	padding-bottom: 20px;
 
 	border-radius: 0px;
-	background: #f1f4f3;
+	background: #D6D7D7;
 	box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.3);
 
 	flex-grow: 1;

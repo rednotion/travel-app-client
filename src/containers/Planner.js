@@ -17,6 +17,7 @@ import { Title, AlignColumns, ColumnContainer, AlignItems, ColumnToolbar,
   WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer, DailyColumns } from "../styles/DDList.js"
 import Toolbar from "../components/Toolbar.js";
 import { LacquerH3 } from "../styles/Text.js";
+import { PurpleButton, GreenButton } from "../styles/Buttons.js";
 
 import Script from 'react-load-script';
 
@@ -30,8 +31,8 @@ import Button from '@material-ui/core/Button';
 import { lightBlue } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
 import ControlCameraIcon from '@material-ui/icons/ControlCamera';
+import MapIcon from '@material-ui/icons/Map';
 
-import ScrollMenu from 'react-horizontal-scrolling-menu';
 
 //////////
 
@@ -447,9 +448,12 @@ class App extends Component {
       
       { /* Wishlist Column */}
       <ColumnToolbar>
-      <ColorButton fullWidth onClick={() => {handleUpdate(this.colInfo, this.taskInfo, this.isLoading);}}>
-        <SaveIcon style={{fontSize: 16}}/> &nbsp; Update
-      </ColorButton>
+      <GreenButton style={{fontSize:14, marginBottom: 10}} fullWidth onClick={() => {handleUpdate(this.colInfo, this.taskInfo, this.isLoading);}}>
+        <SaveIcon style={{fontSize: 14}}/>&nbsp; Save Changes
+      </GreenButton>
+      <PurpleButton variant="contained" fullWidth style={{fontSize: 12}}>
+        <MapIcon />&nbsp; View on map
+      </PurpleButton>
       <p></p>
       {this.tripInfo.wishlistIds.map((colId, index) => (
           <Droppable droppableId={colId} >

@@ -35,6 +35,17 @@ export function ListItemLink(props) {
 
 export function AppBarButtonLink(props) {
   const { icon, primary, to } = props;
+  const ColorButton = withStyles(theme => ({
+    root: {
+      fontSize: 12,
+      fontFamily: "Rubik Mono One",
+      marginRight: 10,
+      color: "#eaebeb",
+      '&:hover': {
+        color: "#F7620C",
+      },
+    },
+  }))(Button);
 
   const renderLink = React.useMemo(
     () => React.forwardRef((itemProps, ref) => <RouterLink to={to} ref={ref} {...itemProps} />),
@@ -42,10 +53,10 @@ export function AppBarButtonLink(props) {
   );
 
   return (
-      <Button color="inherit" style={{fontSize: 12}} component={renderLink}>
+      <ColorButton style={{fontSize: 12}} component={renderLink}>
         {icon ? <>{icon}</> : null}
         {primary}
-      </Button>
+      </ColorButton>
   );
 }
 
@@ -55,12 +66,13 @@ export function ToolbarButtonLink(props) {
   const ColorButton = withStyles(theme => ({
     root: {
       fontSize: 12,
+      fontFamily: "Rubik Mono One",
       marginRight: 10,
-      color: theme.palette.getContrastText(deepPurple[700]),
-      backgroundColor: deepPurple[700],
+      color: "#202428",
+      backgroundColor: "#F7620C",
       '&:hover': {
-        backgroundColor: deepPurple[800],
-        color: deepPurple[600]
+        color: "#F7620C",
+        backgroundColor: "#121416"
       },
     },
   }))(Button);
@@ -72,10 +84,10 @@ export function ToolbarButtonLink(props) {
   );
 
   return (
-      <Button variant="contained" color="primary" style={buttonStyle} 
+      <ColorButton variant="contained" color="primary" style={buttonStyle} 
         component={renderLink}>
-        {icon ? <>{icon}&nbsp;&nbsp;</> : null}
+        {icon ? <>{icon}&nbsp;</> : null}
         {primary}
-      </Button>
+      </ColorButton>
   );
 }

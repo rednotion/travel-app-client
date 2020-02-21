@@ -14,8 +14,7 @@ export const Title = styled.h4`
   margin-top: 0px;
   margin-bottom: 8px;
   padding: 15px;
-  font-family: "Roboto";
-  font-weight: "bold";
+  font-family: "Rubik Mono One";
 `;
 export const AlignColumns = styled.div`
 	display: flex;
