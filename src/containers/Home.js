@@ -1,17 +1,14 @@
-import React, { useRef, useState, useEffect } from "react";
-import { PageHeader, ListGroup, ListGroupItem, Glyphicon, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { ListGroupItem, Glyphicon } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { API } from "aws-amplify";
-import Popup from "reactjs-popup";
 
-import { AlignPanels, BackgroundPanel, PanelTitle, PanelSubtitle, InvisiblePanel, 
-    InvisiblePanelFixed } from "../styles/Pages.js";
+import { AlignPanels, BackgroundPanel, PanelTitle, InvisiblePanel } from "../styles/Pages.js";
 
 import { trips as data_trips } from "../data/data_trips.js"
 
 
 export default function Home(props) {
-    const [isLoading, setIsLoading] = useState(true);
+    //const [isLoading, setIsLoading] = useState(true);
     const [allTrips, setAllTrips] = useState({})
 
   /* On load, find our trips */
@@ -23,7 +20,7 @@ export default function Home(props) {
               } catch (e) {
                   alert(e);
               }
-              setIsLoading(false)
+              //setIsLoading(false)
           }
 
           onLoad();

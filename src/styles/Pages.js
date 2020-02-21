@@ -20,6 +20,10 @@ export const LocationField = styled.div`
 	z-index: 2000;
 `
 
+export const Padding20 = styled.div`
+	padding: 20px;
+`
+
 export const Panel = styled.div`
 	margin: 8px;
 	padding-top: 12px;

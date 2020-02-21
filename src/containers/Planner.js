@@ -10,11 +10,13 @@ import { useFormFields } from "../libs/hooksLib";
 import { API } from "aws-amplify";
 import LoaderButton from "../components/LoaderButton";
 
-import { BackgroundPanel, PanelTitle, PanelSubtitlem, InvisiblePanel } from "../styles/Pages"
+
+import { BackgroundPanel, PanelTitle, PanelSubtitlem, InvisiblePanel, Padding20 } from "../styles/Pages"
 import { Title, AlignColumns, ColumnContainer, AlignItems, ColumnToolbar,
   ItemContainer, AlignRuler, Ruler, RulerNotch, EmptyRulerNotch, DriveContainer,
   WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer } from "../styles/DDList.js"
 import Toolbar from "../components/Toolbar.js";
+import { LacquerH3 } from "../styles/Text.js";
 
 import Script from 'react-load-script';
 
@@ -26,6 +28,8 @@ import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { lightBlue } from '@material-ui/core/colors';
+import TextField from '@material-ui/core/TextField';
+import ControlCameraIcon from '@material-ui/icons/ControlCamera';
 
 //////////
 
@@ -76,83 +80,51 @@ function renderEmptyNotches(colId, startTime, minTime, isDraggingOver) {
   }
 }
 
-function launchToolTip(taskId) {
-  const nearLocations = generateNearLocations(taskId)
-  return (
-    <Popup
-      trigger={<span class="LocationTip">Where next?</span>}
-      on="hover"
-    >
-      {nearLocations.map(item => (
-        <div><b>{item[0]}</b> is {item[1]} hours away</div>
-      ))}
-    </Popup>
-  )
+function handleSubmit(event, taskItem) {
+  event.preventDefault();
+  console.log(document.getElementById("editTime").value)
+  console.log(taskItem)
 }
-function handleSubmit() {}
-function formField(title, id, field, type) {
-    return(
-        <FormGroup controlId={id} bsSize="large">
-          <ControlLabel>{title}</ControlLabel>
-          <FormControl
-            autoFocus
-            type={type}
-            onChange={handleFieldChange}
-            value={field}
-          />
-        </FormGroup>
-      );
-  }
-function handleFieldChange() {}
-function launchPopUp() {
-  const fields = {name: 'hello', location: 'x=10,y=10', duration:10}
+
+function launchPopUp(taskItem) {
   return(
     <Popup 
+      id={"pop_up" + taskItem.taskId}
       trigger={<IconButton size="small" style={{marginTop: -5}}><EditIcon fontSize="small"/></IconButton>} 
       modal
     >
-      <AlignColumns>
-      <BackgroundPanel>
-      <h3>Current Info</h3>
-      </BackgroundPanel>
-
-      <BackgroundPanel>
-        <form onSubmit={handleSubmit}>
-          <FormGroup controlId="name" bsSize="small">
-            <ControlLabel>Title</ControlLabel>
-            <FormControl
-              autoFocus
-              type="content"
-              onChange={handleFieldChange}
-              value={fields.name}
-            />
-          </FormGroup>
-        </form>
-      </BackgroundPanel>
-      </AlignColumns>
+      <Padding20>
+      <LacquerH3>{taskItem.taskName}</LacquerH3>
+      <p></p>
+      <div fontFamily="Roboto" fontSize="14"><b>Note</b>: Please head to <b>Places</b> tab to make edits to Location</div>
+      <p></p>
+      <form onSubmit={(e) => handleSubmit(e, taskItem)}>
+      <TextField 
+              id="editTime"
+              label="Duration" 
+              fullWidth
+              margin="dense"
+              variant="filled"
+              type="number"
+              defaultValue={taskItem.taskDuration}
+              InputProps={{style: {fontSize: 12} }}
+      />
+      <TextField 
+              id="editNotes"
+              label="Notes" 
+              fullWidth
+              margin="dense"
+              variant="filled"
+              multiline rows="4"
+              defaultValue={taskItem.taskNotes}
+              InputProps={{style: {fontSize: 12} }}
+      />
+      <p></p>
+      {LoaderButton(false, false, "Update")}
+      </form>
+      </Padding20>
     </Popup>
   );
-}
-
-// function generateNearLocations(itemId, distances, info) {
-//   // returns ['locationName', distance]
-//   const distanceDict = distances[itemId]
-//   var items = Object.keys(distanceDict).map(function(key) {
-//     return [key, distanceDict[key]];
-//   });
-//   // Sort the array based on the second element
-//   items.sort(function(first, second) {
-//     return first[1] - second[1];
-//   });
-//   items = items.filter(pair => pair[0] != itemId)
-
-//   const nearLocations = items.map(each => ([info.items[each[0]].description, each[1]]))
-
-//   return nearLocations.slice(0,3)
-// }
-
-function generateNearLocations(taskId) {
-  return [['PlaceA', 10], ['PlaceB', 20], ['PlaceC', 30]]
 }
 
 function generateItemTitle(taskItem, isDragging) {
@@ -162,7 +134,7 @@ function generateItemTitle(taskItem, isDragging) {
     return(
       <div>
       <span class="left"><b>{shortenedTitle}</b> <small><i>({taskItem.taskDuration}h)</i></small></span>
-      {(!isDragging) ? <span class="right">{launchPopUp()}</span> : ""}
+      {(!isDragging) ? <span class="right">{launchPopUp(taskItem)}</span> : ""}
       </div>
     ) } else {
     return(
@@ -255,7 +227,7 @@ function rebuildList(tripId, locationIds, taskInfo, distanceInfo) {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {distanceInfo: null}
+    this.state = {distanceInfo: null, placeIdDict: null, isLoading: true}
     this.onDragEnd = this.onDragEnd.bind(this);
     this.minTime = "09:00"
     this.tripId = ''
@@ -304,6 +276,49 @@ class App extends Component {
     }
   }
 
+  launchToolTip = (taskId) => {
+    if (this.state.isLoading) {
+      return ( <div></div> )
+    } else {
+      const nearLocations = this.generateNearLocations(taskId).map(item => (
+        [this.taskInfo[item[0]].taskName.split(",")[0], item[1]]
+      ));
+
+      return (
+        <Popup
+          trigger={<IconButton size="small" style={{marginTop: -5}}><ControlCameraIcon /></IconButton>}
+          on="hover"
+        >
+        {nearLocations.map(item => (<div><b>{item[0]}</b> is {item[1]} away</div> ))}
+        </Popup>
+      )
+    };
+  }
+
+  generateNearLocations = (taskId) => {
+    // returns ['locationName', distance]
+    if (!this.state.isLoading) {
+      const thisPlaceId = this.taskInfo[taskId].taskGooglePlaceId
+      const distanceDict = this.state.distanceInfo[thisPlaceId]
+      var items = Object.keys(distanceDict).map(function(placeId) {
+        return [placeId, distanceDict[placeId].duration.value, distanceDict[placeId].duration.text];
+      });
+
+      // Sort the array based on the second element
+      items.sort(function(first, second) {
+        return first[1] - second[1];
+      });
+      items = items.filter(pair => pair[0] != thisPlaceId)
+
+      const nearLocations = items.map(each => ([this.state.placeIdDict[each[0]], each[2]]))
+      return nearLocations.slice(0,3)
+
+    } else {
+      return []
+    }
+  }
+
+
   handleScriptLoad = () => {
     var self = this
     var places = Object.keys(self.taskInfo).filter(
@@ -331,8 +346,18 @@ class App extends Component {
             }
             reformatDistanceInfo[places[x].placeId] = innerDictionary;
           }
-          self.setState({distanceInfo: reformatDistanceInfo})
           console.log(reformatDistanceInfo)
+
+          var reversePlaceId = {}
+          Object.keys(self.taskInfo).filter(key => key.startsWith('place')).map(key => 
+            reversePlaceId[self.taskInfo[key].taskGooglePlaceId] = key
+          );
+
+          self.setState({
+            distanceInfo: reformatDistanceInfo, 
+            placeIdDict: reversePlaceId,
+            isLoading: false
+          });
         }
       })
     }
@@ -345,7 +370,6 @@ class App extends Component {
       <div>
       <Script url={this.googleApiUrl} onLoad={() => this.handleScriptLoad()}/>
       { Toolbar(this.tripId) }
-
       <DragDropContext onDragEnd={this.onDragEnd}>
         <AlignColumns>
         { /* Daily Columns */}
@@ -359,8 +383,8 @@ class App extends Component {
 	            >
                 <Title>
                 <div>
-                <span class="left">{this.colInfo[colId].colName}</span>
-                <span class="right"><IconButton size="small" style={{marginTop: -5}}><MoreVertIcon /></IconButton></span>
+                <span className="left">{this.colInfo[colId].colName}</span>
+                <span className="right"><IconButton size="small" style={{marginTop: -5}}><MoreVertIcon /></IconButton></span>
                 </div>
                 </Title>
                   {renderEmptyNotches(colId, this.colInfo[colId].colStartTime, this.minTime, snapshot.isDraggingOver)}
@@ -387,16 +411,16 @@ class App extends Component {
   		                    >
                           <ItemTitle>{generateItemTitle(this.taskInfo[taskId], snapshot.isDragging)}</ItemTitle>
                           <ItemBody>
-                            {this.taskInfo[taskId].taskName} + "more words..."
+                            {this.taskInfo[taskId].taskNotes}
+                            <div className="right">{!this.state.isLoading && this.launchToolTip(taskId)}</div>
                           </ItemBody>
-                          <div>{launchToolTip(this.taskInfo[taskId].taskId)}</div>
   		                    </ItemContainer>
   		                  )}
   		                </Draggable>
                     )
                     :(
                       <DriveContainer itemDuration={parseFloat(this.taskInfo[taskId].taskDuration)}>
-                        {generateItemTitle(this.taskInfo[taskId])}
+                        {!this.state.isLoading && generateItemTitle(this.taskInfo[taskId])}
                       </DriveContainer>
                     )))}
 	              	</AlignItems>

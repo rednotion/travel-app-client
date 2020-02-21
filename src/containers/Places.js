@@ -1,31 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { FormGroup, FormControl, ControlLabel, Glyphicon, ButtonToolbar,
-	ListGroup, ListGroupItem } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import { Glyphicon, ListGroupItem } from "react-bootstrap";
 
 import { API } from "aws-amplify";
-import config from "../config";
 
 import { useFormFields } from "../libs/hooksLib";
-import { formField } from "../components/Forms.js"
 import LoaderButton from "../components/LoaderButton";
-import { AlignPanels, BackgroundPanel, PanelTitle, PanelSubtitle, InvisiblePanel, 
-	InvisiblePanelFixed } from "../styles/Pages.js";
+import { AlignPanels, BackgroundPanel, PanelTitle, InvisiblePanel } from "../styles/Pages.js";
 import Toolbar from "../components/Toolbar.js";
 import { LacquerH3 } from "../styles/Text.js";
 
 import "../styles/HoverStyles.css"
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
-import FilledInput from '@material-ui/core/FilledInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import { PurpleButton, GreenButton } from '../styles/Buttons.js';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import EditIcon from '@material-ui/icons/Edit';
@@ -123,7 +110,7 @@ export default function Places(props) {
           <EditIcon />&nbsp;&nbsp; Edit
         </PurpleButton>
     		<p></p>
-    		More info
+    		{allTasksInfo[whatInfo].taskNotes}
     		</div>
     	);
     }
@@ -138,7 +125,7 @@ export default function Places(props) {
         // make new body
         currentPlaceInfo['taskName'] = document.getElementById('editLocation').value
         if (updateTaskDuration !== null) { currentPlaceInfo['taskDuration'] = updateTaskDuration }
-        if (updateTaskNotes !== null ) { currentPlaceInfo['tripNotes'] = updateTaskNotes }
+        if (updateTaskNotes !== null ) { currentPlaceInfo['taskNotes'] = updateTaskNotes }
         if (typeof document.getElementById('editLocation').data !== "undefined") {
             currentPlaceInfo['taskGooglePlaceId'] = document.getElementById('editLocation').data
         };
@@ -200,12 +187,13 @@ export default function Places(props) {
               defaultValue={currentPlaceInfo.taskNotes}
               onChange={(e) => handleEditChange(e, setUpdateTaskNotes)}
               InputLabelProps={
-                {shrink: true,},
+                {shrink: true},
                 {style: {fontSize: 12} }
               }
             />
             <p></p>
-            {LoaderButton(isLoading, false, "Update")}
+            {LoaderButton(false, 
+              false, "Update")}
             </form>
             </div>
         );
@@ -288,7 +276,7 @@ export default function Places(props) {
               value={fields.taskNotes}
               onChange={handleFieldChange}
               InputLabelProps={
-                {shrink: true,},
+                {shrink: true},
                 {style: {fontSize: 12} }
               }
             />

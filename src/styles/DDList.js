@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import * as Colors from './colors.js'
 
-const durationMultiplier = 60;
+const durationMultiplier = 70;
 const itemPadding = 3;
 
 // Column items
@@ -125,7 +124,7 @@ export const Ruler = styled.div`
   width: 30px;
   margin-left: 5px;
   margin-bottom: 5px;
-  background: ${props => (props.isDraggingOver ? '#9fa8da' : '#eceff1')};
+  background: ${props => (props.isDraggingOver ? '#9fa8da' : '#b0bec5')};
   color: ${props => (props.isDraggingOver ? '#9575cd' : '#546e7a')};
 `;
 export const RulerNotch = styled.div`
