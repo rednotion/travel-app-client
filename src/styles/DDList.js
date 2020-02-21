@@ -4,6 +4,11 @@ const durationMultiplier = 70;
 const itemPadding = 3;
 
 // Column items
+export const DailyColumns = styled.div`
+  display: flex;
+  flex-direction: row;
+  overflow-y:auto;
+`
 export const Title = styled.h4`
   color: #535353;
   margin-top: 0px;
@@ -19,6 +24,8 @@ export const ColumnToolbar = styled.div`
   margin: 8px;
   padding: 0px;
   min-width: 200px;
+  max-width: 250px;
+
   flex-grow: 1;
   display: flex,
   flex-direction: column, 
@@ -30,18 +37,15 @@ export const ColumnContainer = styled.div`
 
   margin: 8px;
 
-  min-width: 200px;
+  min-width: 250px;
   max-width: 300px;
-  
-  flex-grow: 1;
+
   display: flex;
   flex-direction: column;
+  flew-grow: 1;
 `;
 export const WishlistContainer = styled.div`
   background: ${props => (props.isDraggingOver ? '#ffd54f' : '#fff9c4')};
-
-  min-width: 200px;
-  max-width: 300px;
   
   flex-grow: 1;
   display: flex;

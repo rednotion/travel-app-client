@@ -14,7 +14,7 @@ import LoaderButton from "../components/LoaderButton";
 import { BackgroundPanel, PanelTitle, PanelSubtitlem, InvisiblePanel, Padding20 } from "../styles/Pages"
 import { Title, AlignColumns, ColumnContainer, AlignItems, ColumnToolbar,
   ItemContainer, AlignRuler, Ruler, RulerNotch, EmptyRulerNotch, DriveContainer,
-  WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer } from "../styles/DDList.js"
+  WishlistContainer, ItemTitle, ItemBody, WishlistItemContainer, DailyColumns } from "../styles/DDList.js"
 import Toolbar from "../components/Toolbar.js";
 import { LacquerH3 } from "../styles/Text.js";
 
@@ -144,6 +144,16 @@ function generateItemTitle(taskItem, isDragging) {
       )
   }
 }
+
+const Arrow = ({ text, className }) => {
+  return (
+    <div
+      className={className}
+    >{text}</div>
+  );
+};
+const ArrowLeft = Arrow({ text: '<', className: 'arrow-prev' });
+const ArrowRight = Arrow({ text: '>', className: 'arrow-next' });
 
 async function handleUpdate(colInfo, taskInfo, isLoading) {
   isLoading = true;
@@ -375,6 +385,7 @@ class App extends Component {
       <DragDropContext onDragEnd={this.onDragEnd}>
         <AlignColumns>
         { /* Daily Columns */}
+        <DailyColumns>
         {this.tripInfo.colIds.map((colId, index) => (
 	        <Droppable droppableId={colId} >
 	          {(provided, snapshot) => (
@@ -429,9 +440,10 @@ class App extends Component {
                   </AlignRuler>
                   {provided.placeholder}
 	            </ColumnContainer>
-	          )}
-	        </Droppable>
-	    ))}
+  	          )}
+  	      </Droppable>
+  	    ))}
+        </DailyColumns>
       
       { /* Wishlist Column */}
       <ColumnToolbar>
