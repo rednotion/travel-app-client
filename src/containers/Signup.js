@@ -3,8 +3,9 @@ import LoaderButton from "../components/LoaderButton";
 import { useFormFields } from "../libs/hooksLib";
 import "./Signup.css";
 import { Auth } from "aws-amplify";
-import { BackgroundPanel } from "../styles/Pages.js";
+import { BackgroundPanel, PanelTitle } from "../styles/Pages.js";
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 export default function Signup(props) {
   const [fields, handleFieldChange] = useFormFields({
@@ -74,70 +75,84 @@ export default function Signup(props) {
 
   function renderConfirmationForm() {
     return (
+      <div>
+      <center><PanelTitle><small>...begins with a single step</small></PanelTitle></center>
       <form onSubmit={handleConfirmationSubmit}>
-      Please check your email for the code.
+      <center><small>Please check your email for the code.</small></center>
         <TextField
             id="confirmationCode"
-            InputProps={{style: {fontSize: 16} }}
             fullWidth
-            label="Confirmation Code"
+            label={<Typography style={{fontFamily: "Montserrat"}}>
+              Confirmation Code
+            </Typography>}
             margin="dense"
             variant="filled" 
             onChange={handleFieldChange}
             value={fields.confirmationCode}
+            InputProps={{style: {fontSize: 16, fontFamily: "Montserrat"} }}
           />
         <p></p>
         {LoaderButton(isLoading, !validateConfirmationForm(), "Verify")}
       </form>
+      </div>
     );
   }
 
   function renderForm() {
     return (
+      <div>
+      <center><PanelTitle><small>Journey of a thousand miles...</small></PanelTitle></center>
       <form onSubmit={handleSubmit}>
         <TextField
             id="email"
-            InputProps={{style: {fontSize: 16} }}
             fullWidth
-            label="Email"
+            label={<Typography style={{fontFamily: "Montserrat"}}>
+              Email
+            </Typography>}
             margin="dense"
             variant="filled" 
             onChange={handleFieldChange}
             value={fields.email}
+            InputProps={{style: {fontSize: 16, fontFamily: "Montserrat"} }}
           />
           <br></br>
           <TextField
             id="password"
-            InputProps={{style: {fontSize: 16} }}
             fullWidth
-            label="Password"
+            label={<Typography style={{fontFamily: "Montserrat"}}>
+              Password
+            </Typography>}
             margin="dense"
             variant="filled" 
             type="password"
             onChange={handleFieldChange}
             value={fields.password}
+            InputProps={{style: {fontSize: 16, fontFamily: "Montserrat"} }}
           />
           <br></br>
           <TextField
             id="confirmPassword"
-            InputProps={{style: {fontSize: 16} }}
             fullWidth
-            label="Confirm Password"
+            label={<Typography style={{fontFamily: "Montserrat"}}>
+              Confirm Password
+            </Typography>}
             margin="dense"
             type="password"
             variant="filled" 
             onChange={handleFieldChange}
             value={fields.confirmPassword}
+            InputProps={{style: {fontSize: 16, fontFamily: "Montserrat"} }}
           />
           <p></p>
         {LoaderButton(isLoading, !validateForm(), "Signup")}
       </form>
+      </div>
     );
   }
 
   return (
     <BackgroundPanel>
-    <div className="Signup">
+    <div className="Signup">    
       {newUser === null ? renderForm() : renderConfirmationForm()}
     </div>
     </BackgroundPanel>

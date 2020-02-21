@@ -3,11 +3,12 @@ import { Auth } from "aws-amplify";
 import { FormGroup, FormControl } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { useFormFields } from "../libs/hooksLib";
-import { BackgroundPanel } from "../styles/Pages.js";
+import { BackgroundPanel, PanelTitle } from "../styles/Pages.js";
 import { FieldTitle } from "../styles/Forms.js"
 import "./Login.css";
 
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 export default function Login(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,28 +38,33 @@ export default function Login(props) {
   return (
     <BackgroundPanel>
     <div className="Login">
+      <center><PanelTitle>Welcome Back</PanelTitle></center>
       <form onSubmit={handleSubmit}>
         <TextField
             id="email"
-            InputProps={{style: {fontSize: 16} }}
             fullWidth
-            label="Email"
+            label={<Typography style={{fontFamily: "Montserrat"}}>
+              Email
+            </Typography>}
             margin="dense"
             variant="filled" 
             onChange={handleFieldChange}
             value={fields.email}
+            InputProps={{style: {fontSize: 16, fontFamily: "Montserrat"} }}
           />
           <br></br>
           <TextField
             id="password"
-            InputProps={{style: {fontSize: 16} }}
             fullWidth
-            label="Password"
+            label={<Typography style={{fontFamily: "Montserrat"}}>
+              Password
+            </Typography>}
             type="password"
             margin="dense"
             variant="filled" 
             onChange={handleFieldChange}
             value={fields.password}
+            InputProps={{style: {fontSize: 16, fontFamily: "Montserrat"} }}
           />
           <p></p>
         {LoaderButton(isLoading, !validateForm(), "Login")}
