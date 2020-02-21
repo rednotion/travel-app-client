@@ -144,7 +144,8 @@ function App(props) {
     <div className="App container">
     <AppBar position="fixed">
       <Toolbar style={{backgroundColor: "#121416"}}>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" href="/">
+        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" 
+        href={isAuthenticated ? "/trips" : "/"}>
           <GestureIcon style={{color:"#F7620C"}} fontSize="large"/>
         </IconButton>
         <Typography variant="h6" className={classes.title}>
@@ -158,6 +159,7 @@ function App(props) {
             </Button>
             </>
           : <>
+            <AppBarButtonLink to="/" primary="About"/>
             <AppBarButtonLink to="/signup" primary="Signup"/>
             <AppBarButtonLink to="/login" primary="Login"/>
             </>

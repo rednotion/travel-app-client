@@ -27,7 +27,7 @@ export default function UnauthenticatedRoute({ component: C, appProps, ...rest }
         !appProps.isAuthenticated
           ? <C {...props} {...appProps} />
           : <Redirect
-              to={redirect === "" || redirect === null ? "/" : redirect}
+              to={redirect === "" || redirect === null ? "/trips" : redirect}
             />}
             /* We build the redirect url like this so we know where the user was 
             trying to go before we redirected him to LOGIN page */
