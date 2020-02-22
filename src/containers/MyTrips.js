@@ -112,6 +112,8 @@ export default function MyTrips(props) {
   async function handleSubmit(event) { 
     event.preventDefault();
 
+    if (validateForm()) {
+
     setFormIsLoading(true);
 
     var tripResponse;
@@ -119,7 +121,7 @@ export default function MyTrips(props) {
       tripEndDate: fields.tripEndDate, tripEndTime: fields.tripEndTime, 
       tripLocation: document.getElementById("autocompleteLocation").value,
       tripGooglePlaceId: document.getElementById("autocompleteLocation").data, 
-      tripNotes: ((fields.tripNotes !== "") & fields.tripNotes : null),
+      tripNotes: ((fields.tripNotes !== "") ? fields.tripNotes : null),
       colIds: [], wishlistIds: [], taskIds: []};
     try {
       tripResponse = await API.post("travel", "/trips", {body: tripData});
@@ -169,6 +171,7 @@ export default function MyTrips(props) {
       setFormIsLoading(false);
     } 
   }
+  }
 
   function validateForm() {
     return (
@@ -209,7 +212,7 @@ export default function MyTrips(props) {
   }
 
   const googleUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`
-  
+
   return (
     <BackgroundPanel>
     <AlignPanels>
@@ -340,7 +343,7 @@ export default function MyTrips(props) {
         />
 
         <p></p>
-        {LoaderButton(formIsLoading, false, "Create")}
+        {LoaderButton(formIsLoading, !validateForm(), "Create")}
       </form>
     </InvisiblePanel>
     </AlignPanels>

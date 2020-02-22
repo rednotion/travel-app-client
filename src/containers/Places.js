@@ -218,6 +218,8 @@ export default function Places(props) {
 
     async function onAddFormSubmit(event) {
         event.preventDefault();
+
+        if (validateForm()) {
         setIsLoading(true);
         const taskData = {
             tripId: props.match.params.tripId,
@@ -239,6 +241,7 @@ export default function Places(props) {
         } catch (e) {
             alert(e);
         }
+      }
     }
 
     function loadAddForm() {

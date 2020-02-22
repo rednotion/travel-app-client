@@ -66,7 +66,7 @@ export default function Signup(props) {
 
     	props.userHasAuthenticated(true);
     	/*This value is defined in App.js, its the same one we set on Login page */
-    	props.history.push("/");
+    	props.history.push("/trips");
     } catch(e) {
     	alert(e.message);
     	setIsLoading(false);
