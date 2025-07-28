@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAUSE Protocol</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+            max-width: 450px;
+            width: 100%;
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .header {
+            background: #6366f1;
+            color: white;
+            padding: 40px 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 40px 32px;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .step-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .step-description {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 32px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: #334155;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .radio-group, .checkbox-group {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .radio-item, .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 2px solid #f1f5f9;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafbfc;
+        }
+
+        .radio-item:hover, .checkbox-item:hover {
+            border-color: #6366f1;
+            background: #f8faff;
+        }
+
+        .radio-item.selected, .checkbox-item.checked {
+            border-color: #6366f1;
+            background: #f8faff;
+        }
+
+        .radio-item input, .checkbox-item input {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #6366f1;
+        }
+
+        .radio-item span, .checkbox-item span {
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #475569;
+        }
+
+        .radio-item.selected span, .checkbox-item.checked span {
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .hunger-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hunger-btn {
+            width: 52px;
+            height: 52px;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            background: white;
+            color: #64748b;
+        }
+
+        .hunger-btn:hover {
+            border-color: #6366f1;
+            background: #f8faff;
+            color: #6366f1;
+        }
+
+        .hunger-btn.selected {
+            border-color: #6366f1;
+            background: #6366f1;
+            color: white;
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 12px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5855eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: #f1f5f9;
+            margin: 24px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #6366f1;
+            transition: width 0.4s ease;
+            border-radius: 2px;
+        }
+
+        .step-counter {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 16px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .summary {
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 16px;
+            margin-top: 24px;
+        }
+
+        .summary h3 {
+            color: #1e293b;
+            margin-bottom: 16px;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .summary-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #475569;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .copy-btn {
+            flex: 1;
+            background: #10b981;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .notion-btn {
+            background: #1e293b;
+            color: white;
+        }
+
+        .notion-btn:hover {
+            background: #0f172a;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                margin: 10px;
+                border-radius: 20px;
+            }
+            
+            .header {
+                padding: 32px 24px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .content {
+                padding: 32px 24px;
+            }
+            
+            .hunger-btn {
+                width: 46px;
+                height: 46px;
+                font-size: 1rem;
+            }
+            
+            .step-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PAUSE</h1>
+            <div class="subtitle">Mindful check-in before snacking</div>
+        </div>
+
+        <div class="content">
+            <div class="step-counter">
+                <span id="stepCounter">Step 1 of 5</span>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+            </div>
+
+            <!-- Step 1: Physical Check -->
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-title">Physical Check</div>
+                    <div class="step-description">Let's tune into your body's signals</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Rate your actual hunger level</label>
+                    <div class="hunger-buttons" id="hungerButtons">
+                        <div class="hunger-btn" onclick="selectHunger(1)">1</div>
+                        <div class="hunger-btn" onclick="selectHunger(2)">2</div>
+                        <div class="hunger-btn" onclick="selectHunger(3)">3</div>
+                        <div class="hunger-btn" onclick="selectHunger(4)">4</div>
+                        <div class="hunger-btn" onclick="selectHunger(5)">5</div>
+                        <div class="hunger-btn" onclick="selectHunger(6)">6</div>
+                        <div class="hunger-btn" onclick="selectHunger(7)">7</div>
+                        <div class="hunger-btn" onclick="selectHunger(8)">8</div>
+                        <div class="hunger-btn" onclick="selectHunger(9)">9</div>
+                        <div class="hunger-btn" onclick="selectHunger(10)">10</div>
+                    </div>
+                    <div class="range-labels">
+                        <span>Not hungry</span>
+                        <span>Extremely hungry</span>
+                    </div>
+                    <input type="hidden" id="hungerLevel" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>What type of hunger are you experiencing?</label>
+                    <div class="radio-group">
+                        <div class="radio-item" onclick="selectRadio('hungerType', 'mouth')">
+                            <input type="radio" id="hungerType_mouth" name="hungerType" value="mouth">
+                            <span>👄 Mouth hunger (craving specific tastes)</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('hungerType', 'stomach')">
+                            <input type="radio" id="hungerType_stomach" name="hungerType" value="stomach">
+                            <span>🤤 Stomach hunger (physical emptiness)</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('hungerType', 'emotional')">
+                            <input type="radio" id="hungerType_emotional" name="hungerType" value="emotional">
+                            <span>💭 Emotional void (need for comfort)</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('hungerType', 'none')">
+                            <input type="radio" id="hungerType_none" name="hungerType" value="none">
+                            <span>🚫 No actual hunger, just want to eat</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Assess the Trigger -->
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-title">Assess the Trigger</div>
+                    <div class="step-description">What's driving this craving right now?</div>
+                </div>
+
+                <div class="form-group">
+                    <label>What were you doing 2 minutes before the craving hit?</label>
+                    <textarea id="beforeCraving" placeholder="e.g. Working on a difficult task, scrolling social media, had a stressful meeting..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>What emotions are you experiencing? (Check all that apply)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item" onclick="toggleCheckbox('bored')">
+                            <input type="checkbox" id="bored" value="bored">
+                            <span>😴 Bored</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('stressed')">
+                            <input type="checkbox" id="stressed" value="stressed">
+                            <span>😰 Stressed</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('procrastinating')">
+                            <input type="checkbox" id="procrastinating" value="procrastinating">
+                            <span>🙄 Procrastinating</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('celebrating')">
+                            <input type="checkbox" id="celebrating" value="celebrating">
+                            <span>🎉 Celebrating</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('tired')">
+                            <input type="checkbox" id="tired" value="tired">
+                            <span>😴 Tired</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('anxious')">
+                            <input type="checkbox" id="anxious" value="anxious">
+                            <span>😟 Anxious</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('lonely')">
+                            <input type="checkbox" id="lonely" value="lonely">
+                            <span>😢 Lonely</span>
+                        </div>
+                        <div class="checkbox-item" onclick="toggleCheckbox('other')">
+                            <input type="checkbox" id="other" value="other">
+                            <span>🤔 Other</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Uncover the Real Need -->
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-title">Uncover the Real Need</div>
+                    <div class="step-description">What does your mind/body actually need?</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Is this "I need fuel" or something else?</label>
+                    <div class="radio-group">
+                        <div class="radio-item" onclick="selectRadio('needType', 'fuel')">
+                            <input type="radio" id="needType_fuel" name="needType" value="fuel">
+                            <span>🍎 I need fuel (actual hunger)</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('needType', 'break')">
+                            <input type="radio" id="needType_break" name="needType" value="break">
+                            <span>⏸️ I need a break from what I'm doing</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('needType', 'reward')">
+                            <input type="radio" id="needType_reward" name="needType" value="reward">
+                            <span>🏆 I need a reward/treat</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('needType', 'distraction')">
+                            <input type="radio" id="needType_distraction" name="needType" value="distraction">
+                            <span>🙈 I need distraction from thoughts/feelings</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('needType', 'comfort')">
+                            <input type="radio" id="needType_comfort" name="needType" value="comfort">
+                            <span>🤗 I need comfort/soothing</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('needType', 'stimulation')">
+                            <input type="radio" id="needType_stimulation" name="needType" value="stimulation">
+                            <span>⚡ I need stimulation/something interesting</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('needType', 'connection')">
+                            <input type="radio" id="needType_connection" name="needType" value="connection">
+                            <span>💬 I need human connection</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>What would genuinely address this need (besides food)?</label>
+                    <textarea id="realNeed" placeholder="Write each alternative on a new line...&#10;&#10;e.g.&#10;Call a friend&#10;Take a 5-minute walk&#10;Do some stretches"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 4: Substitute or Satisfy -->
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-title">Choose Your Action</div>
+                    <div class="step-description">Pick what you'll do instead</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Your alternatives + suggestions:</label>
+                    <div id="suggestedAlternatives" class="checkbox-group"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>What will you commit to doing?</label>
+                    <textarea id="chosenAction" placeholder="Choose from above or write your own plan..."></textarea>
+                </div>
+            </div>
+
+            <!-- Step 5: Evaluate -->
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <div class="step-title">Reflect & Evaluate</div>
+                    <div class="step-description">Quick reflection for future learning</div>
+                </div>
+
+                <div class="form-group">
+                    <label>How do you feel compared to when you started?</label>
+                    <div class="radio-group">
+                        <div class="radio-item" onclick="selectRadio('feelingAfter', 'much-better')">
+                            <input type="radio" id="feelingAfter_much-better" name="feelingAfter" value="much-better">
+                            <span>✨ Much better - the alternative really helped</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('feelingAfter', 'somewhat-better')">
+                            <input type="radio" id="feelingAfter_somewhat-better" name="feelingAfter" value="somewhat-better">
+                            <span>😊 Somewhat better - glad I paused</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('feelingAfter', 'same')">
+                            <input type="radio" id="feelingAfter_same" name="feelingAfter" value="same">
+                            <span>😐 About the same</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('feelingAfter', 'still-want')">
+                            <input type="radio" id="feelingAfter_still-want" name="feelingAfter" value="still-want">
+                            <span>🤔 Still want the snack, but more aware of why</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('feelingAfter', 'actually-hungry')">
+                            <input type="radio" id="feelingAfter_actually-hungry" name="feelingAfter" value="actually-hungry">
+                            <span>🍽️ Realized I was actually hungry</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Any insights or patterns you notice? (Optional)</label>
+                    <textarea id="insights" placeholder="e.g. This always happens around 3pm when I'm stressed about deadlines..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>What will you do next?</label>
+                    <div class="radio-group">
+                        <div class="radio-item" onclick="selectRadio('nextAction', 'continue-alternative')">
+                            <input type="radio" id="nextAction_continue-alternative" name="nextAction" value="continue-alternative">
+                            <span>▶️ Continue with the alternative action</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('nextAction', 'eat-mindfully')">
+                            <input type="radio" id="nextAction_eat-mindfully" name="nextAction" value="eat-mindfully">
+                            <span>🧘 Eat something mindfully</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('nextAction', 'back-to-task')">
+                            <input type="radio" id="nextAction_back-to-task" name="nextAction" value="back-to-task">
+                            <span>🔄 Go back to what I was doing</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('nextAction', 'different-action')">
+                            <input type="radio" id="nextAction_different-action" name="nextAction" value="different-action">
+                            <span>🔀 Try a different action</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRadio('nextAction', 'rest')">
+                            <input type="radio" id="nextAction_rest" name="nextAction" value="rest">
+                            <span>😴 Take a proper break/rest</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="step" id="summary" style="display: none;">
+                <div class="step-header">
+                    <div class="step-title">Your Session Summary</div>
+                    <div class="step-description">Copy this to your journal for future analysis</div>
+                </div>
+
+                <div class="summary">
+                    <h3>PAUSE Protocol Session - <span id="timestamp"></span></h3>
+                    <div class="summary-content" id="summaryContent"></div>
+                    <div class="export-buttons">
+                        <button class="copy-btn" onclick="copySummary()">📋 Copy</button>
+                        <button class="copy-btn notion-btn" onclick="exportToNotion()">🗒️ Export</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-secondary" id="backBtn" onclick="previousStep()" style="display: none;">← Back</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        const responses = {};
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('stepCounter').textContent = `Step ${currentStep} of ${totalSteps}`;
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            
+            if (step <= totalSteps) {
+                document.getElementById(`step${step}`).classList.add('active');
+                
+                if (step === 4 && responses.need?.needType) {
+                    responses.need.realNeed = document.getElementById('realNeed').value;
+                    generateSuggestions(responses.need.needType);
+                }
+            } else {
+                document.getElementById('summary').style.display = 'block';
+                generateSummary();
+            }
+
+            document.querySelector('.container').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+
+            const backBtn = document.getElementById('backBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            backBtn.style.display = step > 1 ? 'block' : 'none';
+            nextBtn.textContent = step > totalSteps ? 'Start Over' : (step === totalSteps ? 'Finish →' : 'Next →');
+        }
+
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    return document.getElementById('hungerLevel').value && 
+                           document.querySelector('input[name="hungerType"]:checked');
+                case 2:
+                    const beforeCraving = document.getElementById('beforeCraving').value.trim();
+                    const checkedEmotions = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
+                    return beforeCraving && checkedEmotions.length > 0;
+                case 3:
+                    return document.querySelector('input[name="needType"]:checked') &&
+                           document.getElementById('realNeed').value.trim();
+                case 4:
+                    return document.getElementById('chosenAction').value.trim();
+                case 5:
+                    return document.querySelector('input[name="feelingAfter"]:checked') &&
+                           document.querySelector('input[name="nextAction"]:checked');
+                default:
+                    return true;
+            }
+        }
+
+        function saveResponses(step) {
+            switch(step) {
+                case 1:
+                    responses.physical = {
+                        hungerLevel: document.getElementById('hungerLevel').value,
+                        hungerType: document.querySelector('input[name="hungerType"]:checked')?.value
+                    };
+                    break;
+                case 2:
+                    responses.trigger = {
+                        beforeCraving: document.getElementById('beforeCraving').value,
+                        emotions: Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked'))
+                                      .map(cb => cb.value)
+                    };
+                    break;
+                case 3:
+                    responses.need = {
+                        needType: document.querySelector('input[name="needType"]:checked')?.value,
+                        realNeed: document.getElementById('realNeed').value
+                    };
+                    break;
+                case 4:
+                    responses.action = {
+                        chosenAction: document.getElementById('chosenAction').value
+                    };
+                    break;
+                case 5:
+                    responses.evaluation = {
+                        feelingAfter: document.querySelector('input[name="feelingAfter"]:checked')?.value,
+                        insights: document.getElementById('insights').value,
+                        nextAction: document.querySelector('input[name="nextAction"]:checked')?.value
+                    };
+                    break;
+            }
+        }
+
+        function nextStep() {
+            if (currentStep > totalSteps) {
+                location.reload();
+                return;
+            }
+
+            if (!validateStep(currentStep)) {
+                alert('Please complete all required fields before continuing.');
+                return;
+            }
+
+            saveResponses(currentStep);
+            currentStep++;
+            updateProgress();
+            showStep(currentStep);
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateProgress();
+                showStep(currentStep);
+            }
+        }
+
+        function selectRadio(name, value) {
+            const radio = document.getElementById(`${name}_${value}`);
+            const container = radio.parentElement;
+            
+            document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                r.parentElement.classList.remove('selected');
+            });
+            
+            radio.checked = true;
+            container.classList.add('selected');
+            
+            if (name === 'needType') {
+                responses.need = {
+                    needType: value,
+                    realNeed: document.getElementById('realNeed').value
+                };
+                generateSuggestions(value);
+            }
+        }
+
+        function generateSuggestions(needType) {
+            const suggestions = {
+                'fuel': [
+                    'Choose a healthy snack and eat it slowly without distractions',
+                    'Have a glass of water first, then prepare a balanced meal',
+                    'Pick something with protein and fiber to keep you satisfied'
+                ],
+                'break': [
+                    'Take a 5-minute walk outside',
+                    'Do 10 push-ups or stretches',
+                    'Step away from your screen and look out the window',
+                    'Practice deep breathing for 2 minutes'
+                ],
+                'reward': [
+                    'Call a friend to share your accomplishment',
+                    'Listen to your favorite song',
+                    'Take a selfie or post about your win',
+                    'Do something creative for 10 minutes'
+                ],
+                'distraction': [
+                    'Write down what you\'re avoiding in a journal',
+                    'Do a quick brain dump of worrying thoughts',
+                    'Put on upbeat music and dance for one song',
+                    'Text someone you haven\'t talked to in a while'
+                ],
+                'comfort': [
+                    'Take a warm shower or splash cold water on your face',
+                    'Hug a pillow or pet if available',
+                    'Call someone who makes you feel supported',
+                    'Practice self-compassion - talk to yourself like a good friend would'
+                ],
+                'stimulation': [
+                    'Read an interesting article or watch a short educational video',
+                    'Try a quick brain teaser or word game',
+                    'Rearrange something in your space',
+                    'Start a small creative project'
+                ],
+                'connection': [
+                    'Send a thoughtful text to someone you care about',
+                    'Call a friend or family member',
+                    'Post something genuine on social media',
+                    'Write a quick note of appreciation to someone'
+                ]
+            };
+
+            const suggestionsContainer = document.getElementById('suggestedAlternatives');
+            const needSuggestions = suggestions[needType] || [];
+            
+            const userAlternatives = [];
+            if (responses.need?.realNeed) {
+                const lines = responses.need.realNeed.split('\n');
+                lines.forEach(line => {
+                    const cleanLine = line.trim();
+                    if (cleanLine && cleanLine.length > 0) {
+                        userAlternatives.push(cleanLine);
+                    }
+                });
+            }
+            
+            const allAlternatives = [...userAlternatives, ...needSuggestions];
+            
+            suggestionsContainer.innerHTML = allAlternatives.map((suggestion, index) => `
+                <div class="checkbox-item" onclick="selectSuggestion('${suggestion.replace(/'/g, "\\'")}')">
+                    <input type="checkbox" id="suggestion_${index}" value="${suggestion}">
+                    <span>${index < userAlternatives.length ? '💡 ' : '💭 '}${suggestion}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectSuggestion(suggestion) {
+            const textarea = document.getElementById('chosenAction');
+            const currentValue = textarea.value.trim();
+            
+            if (currentValue) {
+                textarea.value = currentValue + '\n• ' + suggestion;
+            } else {
+                textarea.value = '• ' + suggestion;
+            }
+        }
+
+        function toggleCheckbox(id) {
+            const checkbox = document.getElementById(id);
+            const container = checkbox.parentElement;
+            
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                container.classList.add('checked');
+            } else {
+                container.classList.remove('checked');
+            }
+        }
+
+        function selectHunger(level) {
+            document.querySelectorAll('.hunger-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            event.target.classList.add('selected');
+            document.getElementById('hungerLevel').value = level;
+        }
+
+        function generateSummary() {
+            const now = new Date();
+            const timestamp = now.toLocaleString();
+            document.getElementById('timestamp').textContent = timestamp;
+
+            const hungerTypeLabels = {
+                'mouth': 'Mouth hunger (craving specific tastes/textures)',
+                'stomach': 'Stomach hunger (physical emptiness, growling)',
+                'emotional': 'Emotional void (need for comfort/distraction)',
+                'none': 'No actual hunger, just want to eat'
+            };
+
+            const needTypeLabels = {
+                'fuel': 'I need fuel (actual hunger)',
+                'break': 'I need a break from what I\'m doing',
+                'reward': 'I need a reward/treat',
+                'distraction': 'I need distraction from thoughts/feelings',
+                'comfort': 'I need comfort/soothing',
+                'stimulation': 'I need stimulation/something interesting',
+                'connection': 'I need human connection'
+            };
+
+            const feelingAfterLabels = {
+                'much-better': 'Much better - the alternative really helped',
+                'somewhat-better': 'Somewhat better - glad I paused',
+                'same': 'About the same',
+                'still-want': 'Still want the snack, but more aware of why',
+                'actually-hungry': 'Realized I was actually hungry'
+            };
+
+            const nextActionLabels = {
+                'continue-alternative': 'Continue with the alternative action',
+                'eat-mindfully': 'Eat something mindfully',
+                'back-to-task': 'Go back to what I was doing',
+                'different-action': 'Try a different action',
+                'rest': 'Take a proper break/rest'
+            };
+
+            const summary = `PAUSE Protocol Session - ${timestamp}
+
+P - PHYSICAL CHECK:
+• Hunger Level: ${responses.physical.hungerLevel}/10
+• Hunger Type: ${hungerTypeLabels[responses.physical.hungerType]}
+
+A - ASSESS THE TRIGGER:
+• What I was doing before: ${responses.trigger.beforeCraving}
+• Emotions experienced: ${responses.trigger.emotions.join(', ')}
+
+U - UNCOVER THE REAL NEED:
+• Need type: ${needTypeLabels[responses.need.needType]}
+• What would genuinely help: ${responses.need.realNeed}
+
+S - SUBSTITUTE OR SATISFY:
+• Chosen action: ${responses.action.chosenAction}
+
+E - EVALUATE AFTER:
+• How I feel now: ${feelingAfterLabels[responses.evaluation.feelingAfter]}
+• Insights/patterns: ${responses.evaluation.insights || 'None noted'}
+• Next action: ${nextActionLabels[responses.evaluation.nextAction]}
+
+---
+Key Takeaway: ${responses.physical.hungerLevel <= 3 ? 'Low physical hunger - likely emotional eating trigger' : responses.physical.hungerLevel >= 7 ? 'High hunger - may need fuel' : 'Moderate hunger - worth exploring emotional component'}`;
+
+            document.getElementById('summaryContent').textContent = summary;
+        }
+
+        function copySummary() {
+            const summaryText = document.getElementById('summaryContent').textContent;
+            navigator.clipboard.writeText(summaryText).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        function exportToNotion() {
+            const summaryText = document.getElementById('summaryContent').textContent;
+            
+            if (navigator.share && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                navigator.share({
+                    title: 'PAUSE Protocol Session',
+                    text: summaryText
+                }).then(() => {
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = '✅ Shared!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                }).catch(() => {
+                    fallbackNotionExport(summaryText);
+                });
+            } else {
+                fallbackNotionExport(summaryText);
+            }
+        }
+
+        function fallbackNotionExport(summaryText) {
+            navigator.clipboard.writeText(summaryText).then(() => {
+                alert(`📋 Text copied to clipboard!
+
+MOBILE USERS:
+1. Open Notion app
+2. Create a new page or go to existing journal
+3. Paste the content (long press → Paste)
+
+DESKTOP USERS:
+1. Go to notion.so in your browser
+2. Create a new page
+3. Paste with Ctrl+V (Windows) or Cmd+V (Mac)
+
+Note: The native share feature works best when this app is accessed directly from Safari on iPhone, rather than within Claude's interface.`);
+                
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '📋 Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 3000);
+            }).catch(() => {
+                alert('Unable to copy to clipboard. Please manually select and copy the text above.');
+            });
+        }
+
+        updateProgress();
+    </script>
+</body>
+</html>
