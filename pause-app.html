@@ -21,7 +21,7 @@
         }
 
         .container {
-            max-width: 450px;
+            max-width: 390px;
             width: 100%;
             margin: 0 auto;
             min-height: 600px;
@@ -120,6 +120,12 @@
             margin-top: 16px;
         }
 
+        /* Updated: 2-column grid for emotions checkbox group */
+        .checkbox-group.emotions-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
         .radio-item, .checkbox-item {
             display: flex;
             align-items: center;
@@ -156,6 +162,15 @@
         .radio-item.selected span, .checkbox-item.checked span {
             color: #6366f1;
             font-weight: 600;
+        }
+
+        /* Smaller padding for emotions grid items */
+        .emotions-grid .checkbox-item {
+            padding: 12px;
+        }
+
+        .emotions-grid .checkbox-item span {
+            font-size: 0.95rem;
         }
 
         .hunger-buttons {
@@ -352,6 +367,11 @@
             .step-title {
                 font-size: 1.5rem;
             }
+
+            /* Stack emotions grid to single column on mobile */
+            .checkbox-group.emotions-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -435,7 +455,7 @@
 
                 <div class="form-group">
                     <label>What emotions are you experiencing? (Check all that apply)</label>
-                    <div class="checkbox-group">
+                    <div class="checkbox-group emotions-grid">
                         <div class="checkbox-item" onclick="toggleCheckbox('bored')">
                             <input type="checkbox" id="bored" value="bored">
                             <span>😴 Bored</span>
