@@ -551,13 +551,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Your alternatives + suggestions:</label>
-                    <div id="suggestedAlternatives" class="checkbox-group"></div>
+                    <label>What will you commit to doing?</label>
+                    <textarea id="chosenAction" placeholder="Choose from below or write your own plan..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>What will you commit to doing?</label>
-                    <textarea id="chosenAction" placeholder="Choose from above or write your own plan..."></textarea>
+                    <label>Your alternatives + suggestions:</label>
+                    <div id="suggestedAlternatives" class="checkbox-group suggestions-list"></div>
                 </div>
             </div>
 
@@ -597,32 +597,6 @@
                 <div class="form-group">
                     <label>Any insights or patterns you notice? (Optional)</label>
                     <textarea id="insights" placeholder="e.g. This always happens around 3pm when I'm stressed about deadlines..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>What will you do next?</label>
-                    <div class="radio-group">
-                        <div class="radio-item" onclick="selectRadio('nextAction', 'continue-alternative')">
-                            <input type="radio" id="nextAction_continue-alternative" name="nextAction" value="continue-alternative">
-                            <span>▶️ Continue with the alternative action</span>
-                        </div>
-                        <div class="radio-item" onclick="selectRadio('nextAction', 'eat-mindfully')">
-                            <input type="radio" id="nextAction_eat-mindfully" name="nextAction" value="eat-mindfully">
-                            <span>🧘 Eat something mindfully</span>
-                        </div>
-                        <div class="radio-item" onclick="selectRadio('nextAction', 'back-to-task')">
-                            <input type="radio" id="nextAction_back-to-task" name="nextAction" value="back-to-task">
-                            <span>🔄 Go back to what I was doing</span>
-                        </div>
-                        <div class="radio-item" onclick="selectRadio('nextAction', 'different-action')">
-                            <input type="radio" id="nextAction_different-action" name="nextAction" value="different-action">
-                            <span>🔀 Try a different action</span>
-                        </div>
-                        <div class="radio-item" onclick="selectRadio('nextAction', 'rest')">
-                            <input type="radio" id="nextAction_rest" name="nextAction" value="rest">
-                            <span>😴 Take a proper break/rest</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -703,8 +677,7 @@
                 case 4:
                     return document.getElementById('chosenAction').value.trim();
                 case 5:
-                    return document.querySelector('input[name="feelingAfter"]:checked') &&
-                           document.querySelector('input[name="nextAction"]:checked');
+                    return document.querySelector('input[name="feelingAfter"]:checked');
                 default:
                     return true;
             }
@@ -739,8 +712,7 @@
                 case 5:
                     responses.evaluation = {
                         feelingAfter: document.querySelector('input[name="feelingAfter"]:checked')?.value,
-                        insights: document.getElementById('insights').value,
-                        nextAction: document.querySelector('input[name="nextAction"]:checked')?.value
+                        insights: document.getElementById('insights').value
                     };
                     break;
             }
@@ -854,7 +826,6 @@
             
             suggestionsContainer.innerHTML = allAlternatives.map((suggestion, index) => `
                 <div class="checkbox-item" onclick="selectSuggestion('${suggestion.replace(/'/g, "\\'")}')">
-                    <input type="checkbox" id="suggestion_${index}" value="${suggestion}">
                     <span>${index < userAlternatives.length ? '💡 ' : '💭 '}${suggestion}</span>
                 </div>
             `).join('');
@@ -951,7 +922,6 @@ S - SUBSTITUTE OR SATISFY:
 E - EVALUATE AFTER:
 • How I feel now: ${feelingAfterLabels[responses.evaluation.feelingAfter]}
 • Insights/patterns: ${responses.evaluation.insights || 'None noted'}
-• Next action: ${nextActionLabels[responses.evaluation.nextAction]}
 
 ---
 Key Takeaway: ${responses.physical.hungerLevel <= 3 ? 'Low physical hunger - likely emotional eating trigger' : responses.physical.hungerLevel >= 7 ? 'High hunger - may need fuel' : 'Moderate hunger - worth exploring emotional component'}`;
